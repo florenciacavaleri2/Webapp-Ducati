@@ -31,6 +31,14 @@ Instrucciones para cualquier agente de IA que trabaje en este repositorio.
 9. **Nunca des una tarea por terminada sin correr los tests completos.** Las
    tres capas, no solo la que tocaste. Si algo queda en rojo, decilo con la
    salida a la vista en lugar de declarar el trabajo listo.
+10. **Si aprendés algo importante del proyecto, escribilo acá.** Una trampa en
+    la que caíste, una versión que no sirve, un comando que no hace lo que
+    parece: va a "Lo aprendido a los golpes" antes de cerrar la tarea. Este
+    archivo tiene que mejorar con cada sesión, no envejecer.
+11. **Si cambiás el producto, actualizá el `README.md`.** Funcionalidad nueva,
+    comportamiento distinto, variable de entorno, comando: el README describe
+    lo que el proyecto hace hoy, y los cambios visibles se anotan en
+    "Cambios recientes". Lo interno del proceso va acá, no ahí.
 
 ### Por qué las reglas 5 y 6 no son decorativas
 
@@ -236,6 +244,51 @@ eso está `scripts/serve-build.mjs`, que sirve `dist/client` como estático.
 
 Es una capa que ejecuta el agente, no un CI: `npm test` no la incluye. Correrla
 igual antes de dar una tarea por terminada.
+
+## Lo aprendido a los golpes
+
+Trampas reales de este proyecto, cada una costó tiempo una vez. Agregá las
+tuyas (regla 10).
+
+**PGlite admite un solo proceso con la base abierta.** Frená el servidor de
+desarrollo antes de `db:migrate` o `db:seed`, o falla con `ENOENT ... mkdir`.
+Además no crea la carpeta que la contiene: por eso los scripts hacen
+`mkdirSync` del directorio padre. Y deja su worker vivo, así que un script que
+la use necesita `process.exit(0)` o nunca termina.
+
+**`astro preview` no funciona con el adaptador de Vercel.** Para ver el build
+está `npm run preview:build`, que sirve `dist/client` como estático. Solo la
+parte estática: la API y el panel necesitan `npm run dev`.
+
+**El rendimiento no se mide en desarrollo.** Vite sirve cada módulo suelto y
+Astro inyecta su barra de herramientas, así que en `npm run dev` se ven
+decenas de `.js` que no existen en producción. Medir siempre sobre el build.
+
+**Astro rechaza con 403 los POST cuyo `Origin` no coincide** con el host. Es su
+protección CSRF y está bien que exista: el navegador manda la cabecera solo,
+pero un script que pruebe la API tiene que ponerla a mano.
+
+**`node --env-file` se atraganta con el BOM.** `Set-Content -Encoding utf8` de
+PowerShell 5.1 lo agrega y el `.env` deja de parsearse sin decir por qué.
+Escribir esos archivos sin BOM.
+
+**Los servidores MCP de un `.mcp.json` de proyecto no se cargan solos.** Hay
+que habilitarlos (`/mcp`, o `enabledMcpjsonServers` en `~/.claude.json`) **y**
+reiniciar Claude Code: el cambio no toma efecto en caliente. Y el
+`--allowed-origins` del servidor tiene que listar todos los puertos que se van
+a visitar, o Chrome devuelve `ERR_BLOCKED_BY_CLIENT`.
+
+**Al probar el formulario, esperá al handler antes de leer el DOM.** Una
+lectura inmediata después del clic cae entre el `clearErrors()` y el pintado
+de los errores, y parece un bug que no existe. Lo mismo vale al encadenar
+escenarios: si dejás el formulario sucio de la prueba anterior, el siguiente
+falla por tu culpa y no del producto. Ante un rojo sospechoso, reproducilo
+desde carga limpia antes de reportarlo.
+
+**Un `<fieldset>` no achica por debajo de su contenido.** Trae
+`min-width: min-content` del navegador. En la barra de filtros eso estiraba la
+página a 991px en mobile en vez de scrollear dentro de la barra. Cualquier
+`fieldset` en flex necesita `min-width: 0`.
 
 ## Antes de dar algo por terminado
 

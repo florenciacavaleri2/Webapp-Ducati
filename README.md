@@ -196,6 +196,30 @@ del sistema. Necesitan el sitio levantado:
 npm run dev
 ```
 
+## Cambios recientes
+
+Lo más nuevo arriba. Se anota lo que cambia para quien usa el producto, no el
+detalle interno.
+
+### 20/09/2026
+
+- **Tres capas de pruebas.** 118 unitarias y 55 de integración con Vitest
+  (`npm test`), más 16 escenarios end-to-end en
+  [`tests/e2e/scenarios.md`](tests/e2e/scenarios.md) que se corren con el MCP
+  de Playwright. Las de integración usan un Postgres real en memoria, así que
+  no hace falta levantar nada.
+- **Arreglado el scroll horizontal en mobile.** La barra de filtros del
+  catálogo estiraba la página a 991px en pantallas angostas; ahora scrollea
+  dentro de sí misma, como corresponde.
+- **`npm run preview:build`** para ver el build real en el navegador, porque
+  `astro preview` no funciona con el adaptador de Vercel.
+- **`npm run db:seed`** carga 28 leads de ejemplo para ver el panel con datos.
+
+### 19/09/2026
+
+- Primera versión: landing con los 22 modelos de la gama argentina,
+  formulario de contacto y panel de administración.
+
 ## Documentación relacionada
 
 - [`DESIGN.md`](DESIGN.md) — sistema visual: colores, tipografías, componentes.
