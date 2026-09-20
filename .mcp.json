@@ -7,7 +7,7 @@
         "--isolated",
         "--browser", "chrome",
         "--viewport-size", "1440x900",
-        "--allowed-origins", "http://localhost:4321",
+        "--allowed-origins", "http://localhost:4321;http://localhost:4331",
         "--output-dir", "tests/e2e/output"
       ]
     }

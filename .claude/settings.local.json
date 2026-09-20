@@ -8,7 +8,21 @@
       "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); npx --yes ctx7@latest library \"Vitest\" \"How to configure vitest with a node environment, aliases and setup files\")",
       "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); npx --yes ctx7@latest docs /vitest-dev/vitest \"Vitest 5 config file: test.projects for separating unit and integration suites, environment node, alias and include patterns\")",
       "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); git status --short; \"`n--- diff resumido ---\"; git diff --stat; \"`n--- sin seguimiento ---\"; git ls-files --others --exclude-standard)",
-      "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); git diff -- .claude/settings.local.json)"
+      "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); git diff -- .claude/settings.local.json)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_select_option",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_find",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''node.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*serve-build*'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
+      "Bash(npm run *)",
+      "Bash(npm test *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }
