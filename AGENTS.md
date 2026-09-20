@@ -343,6 +343,15 @@ escenarios: si dejás el formulario sucio de la prueba anterior, el siguiente
 falla por tu culpa y no del producto. Ante un rojo sospechoso, reproducilo
 desde carga limpia antes de reportarlo.
 
+**Vercel bloquea el despliegue si el email del commit no está en la cuenta de
+GitHub.** El mensaje es *"El despliegue se bloqueó porque el correo electrónico
+de confirmación no coincidía con una cuenta de GitHub"*, y no importa que el
+push haya funcionado: lo que Vercel mira es el autor del commit. El email de
+este repositorio es `florenciacavaleri2@gmail.com`; comprobalo con
+`git config user.email` antes de commitear si algo se ve raro. Cambiarlo solo
+afecta a los commits nuevos, así que para destrabar un deploy hace falta un
+commit posterior, no basta con corregir la configuración.
+
 **Un `<fieldset>` no achica por debajo de su contenido.** Trae
 `min-width: min-content` del navegador. En la barra de filtros eso estiraba la
 página a 991px en mobile en vez de scrollear dentro de la barra. Cualquier
