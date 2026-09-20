@@ -10,6 +10,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "preview:build": "node scripts/serve-build.mjs",
     "check": "astro check",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",

@@ -99,6 +99,11 @@ const slug = (value: string) =>
     overflow-x: auto;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
+    /* Un <fieldset> trae min-width:min-content del navegador y no achica por
+       debajo de su contenido. Sin esto, los ocho filtros estiran la página a
+       ~990px en mobile y aparece scroll horizontal en todo el sitio en vez
+       de dentro de la barra. */
+    min-width: 0;
   }
 
   .filter-input {

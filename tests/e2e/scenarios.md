@@ -135,8 +135,13 @@ La contraseña del panel es la de `ADMIN_PASSWORD` en `.env`.
 1. En `/admin` sin filtros, bajar al final de la tabla.
 
 **Esperado**
-- Con 29 leads se lee `Página 1 de 2`.
+- La tabla muestra 25 filas como máximo.
+- Con más de 25 leads aparece el paginador `Página 1 de N`.
 - `Anterior` está deshabilitado; `Siguiente` lleva a la página 2.
+
+> No fijar un total exacto: cambia según cuántas veces se corrió el seed y
+> las pruebas de humo. Lo que se verifica es el tamaño de página y el
+> comportamiento del paginador.
 
 ## E13 · Exportar CSV
 
@@ -175,10 +180,12 @@ La contraseña del panel es la de `ADMIN_PASSWORD` en `.env`.
 > build:
 >
 > ```bash
-> npm run build && npm run preview
+> npm run build && npm run preview:build
 > ```
 >
-> El preview queda en `http://localhost:4321`.
+> Queda en `http://localhost:4331`. (`astro preview` no sirve acá: el
+> adaptador de Vercel no lo soporta.) Solo se sirve la parte estática; el
+> formulario y el panel necesitan `npm run dev`.
 
 1. Cargar `/` con la pestaña de red abierta.
 

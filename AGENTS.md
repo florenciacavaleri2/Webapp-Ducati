@@ -220,6 +220,17 @@ npm run db:seed -- --reset   # con el servidor frenado
 npm run dev
 ```
 
+El escenario E16 (cuánto JavaScript llega de verdad) es la excepción: en
+desarrollo Vite sirve cada módulo suelto y Astro inyecta su barra de
+herramientas, así que hay que medir sobre el build.
+
+```bash
+npm run build && npm run preview:build   # queda en :4331
+```
+
+`astro preview` no sirve para esto: el adaptador de Vercel no lo soporta. Por
+eso está `scripts/serve-build.mjs`, que sirve `dist/client` como estático.
+
 > El MCP se registra al iniciar la sesión. Si acabás de clonar el repo,
 > reiniciá Claude Code para que aparezcan sus herramientas.
 
