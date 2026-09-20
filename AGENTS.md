@@ -28,9 +28,12 @@ Instrucciones para cualquier agente de IA que trabaje en este repositorio.
 8. **Para e2e usá el MCP de Playwright; para unitarios e integración, Vitest.**
    Son pruebas locales que ejecuta el agente. Toda funcionalidad nueva viene
    con su prueba en la capa que corresponda.
-9. **Nunca des una tarea por terminada sin correr los tests completos.** Las
-   tres capas, no solo la que tocaste. Si algo queda en rojo, decilo con la
-   salida a la vista en lugar de declarar el trabajo listo.
+9. **Nunca des por terminado un cambio de código sin correr los tests
+   completos.** Las tres capas, no solo la que tocaste. Si algo queda en rojo,
+   decilo con la salida a la vista en lugar de declarar el trabajo listo.
+   *Excepción:* si tocaste únicamente documentación (`AGENTS.md`, `README.md`,
+   `DESIGN.md`, los escenarios de `tests/e2e/`), no corras nada: no hay
+   producto que pueda romperse.
 10. **Si aprendés algo importante del proyecto, escribilo acá.** Una trampa en
     la que caíste, una versión que no sirve, un comando que no hace lo que
     parece: va a "Lo aprendido a los golpes" antes de cerrar la tarea. Este
@@ -243,7 +246,7 @@ eso está `scripts/serve-build.mjs`, que sirve `dist/client` como estático.
 > reiniciá Claude Code para que aparezcan sus herramientas.
 
 Es una capa que ejecuta el agente, no un CI: `npm test` no la incluye. Correrla
-igual antes de dar una tarea por terminada.
+igual antes de dar por terminado un cambio de código.
 
 ## Lo aprendido a los golpes
 
@@ -292,7 +295,9 @@ página a 991px en mobile en vez de scrollear dentro de la barra. Cualquier
 
 ## Antes de dar algo por terminado
 
-Correr **todo**, no solo lo que tocaste:
+**Si tocaste solo documentación, no corras nada.** Leela y listo.
+
+Si tocaste código, correr **todo**, no solo lo que tocaste:
 
 ```bash
 npm run check    # 0 errores de tipos
