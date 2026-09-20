@@ -120,7 +120,8 @@ npm run dev
 | `npm run test:smoke` | Humo contra el server de dev (necesita `npm run dev`) |
 | `npm run inspect` | Peso del build, imágenes y SEO |
 | `npm run db:generate` | Genera una migración tras cambiar el schema |
-| `npm run db:migrate` | Aplica las migraciones |
+| `npm run db:migrate` | Aplica las migraciones a la base de desarrollo |
+| `npm run db:migrate:prod` | Las aplica a Neon, leyendo `DATABASE_URL` de `.env.neon` |
 | `npm run db:seed` | Carga 28 leads de ejemplo para ver el panel con datos |
 | `npm run db:studio` | Explorador visual de la base |
 | `npm run bikes:images` | Descarga las fotos de los modelos |
@@ -143,16 +144,25 @@ Entrá a `/admin` con la contraseña de `ADMIN_PASSWORD`. La sesión dura 8 hora
 2. Importá el repositorio en [Vercel](https://vercel.com). Detecta Astro solo.
 3. Cargá las cuatro variables de entorno en Vercel, con el `DATABASE_URL` de
    Neon y el `PUBLIC_SITE_URL` real.
-4. Aplicá las migraciones contra Neon:
+4. **Aplicá las migraciones contra Neon.** Sin esto la tabla `leads` no existe
+   y el formulario devuelve 500, aunque la landing cargue perfecto. Poné la
+   cadena de Neon en un archivo `.env.neon` (está en `.gitignore`) y corré:
 
 ```bash
-npm run db:migrate
+npm run db:migrate:prod
 ```
+
+   No lo hace Vercel solo, a propósito: que un deploy toque el esquema de la
+   base sin que nadie lo pida es una forma conocida de romper producción.
 
 5. Desplegá.
 
 La landing y `/gracias` salen del CDN como archivos estáticos. Solo `/api/leads`
 y `/admin/*` corren como funciones.
+
+> **`DATABASE_URL` en producción tiene que ser la de Neon.** Una URL `pglite://`
+> no funciona: PGlite es una dependencia de desarrollo y no existe en el
+> runtime de Vercel, además de que el disco de una función es efímero.
 
 ## Decisiones de arquitectura
 
