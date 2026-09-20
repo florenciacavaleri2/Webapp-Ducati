@@ -9,6 +9,9 @@ dist/
 # Base de datos local de desarrollo (PGlite)
 .data/
 
+# Capturas y trazas que deja el MCP de Playwright
+tests/e2e/output/
+
 # Entorno — nunca commitear credenciales
 .env
 .env.*

@@ -11,7 +11,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --env-file=.env scripts/smoke-test.mjs",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:watch": "vitest",
+    "test:smoke": "node --env-file=.env scripts/smoke-test.mjs",
     "inspect": "node scripts/inspect-build.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
@@ -34,8 +38,10 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@electric-sql/pglite": "^0.5.8",
+    "@playwright/mcp": "^0.0.82",
     "dotenv": "^18.0.1",
     "drizzle-kit": "0.31.10",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^5.0.1"
   }
 }

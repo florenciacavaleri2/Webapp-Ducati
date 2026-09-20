@@ -41,6 +41,14 @@ function databaseUrl(): string {
 async function createPglite(path: string) {
   const { PGlite } = await import('@electric-sql/pglite');
   const { drizzle } = await import('drizzle-orm/pglite');
+
+  // `pglite://:memory:` levanta la base en RAM y se pierde al terminar el
+  // proceso. Es lo que usan los tests de integración: base real de Postgres,
+  // limpia en cada corrida y sin tocar el disco.
+  if (path === ':memory:' || path === '') {
+    return drizzle(new PGlite(), { schema });
+  }
+
   const { mkdirSync } = await import('node:fs');
   const { dirname } = await import('node:path');
 

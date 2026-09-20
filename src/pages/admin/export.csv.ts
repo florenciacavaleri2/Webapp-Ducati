@@ -3,21 +3,9 @@ import { and, desc, eq, ilike, inArray, or, type SQL } from 'drizzle-orm';
 import { getDb, leads, LEAD_STATUSES } from '../../db';
 import { FAMILIES, bikes } from '../../data/bikes';
 import { getCountry } from '../../data/countries';
+import { csvFile } from '../../lib/csv';
 
 export const prerender = false;
-
-/**
- * Escapa un valor para CSV.
- *
- * El prefijo con comilla simple cuando el texto arranca con =, +, - o @
- * evita la inyección de fórmulas: sin eso, un lead llamado `=1+1` se
- * ejecutaría al abrir el archivo en Excel.
- */
-function csvCell(value: string | null | undefined): string {
-  const text = value ?? '';
-  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
-  return `"${safe.replace(/"/g, '""')}"`;
-}
 
 export const GET: APIRoute = async ({ url }) => {
   const q = (url.searchParams.get('q') ?? '').trim().slice(0, 100);
@@ -59,34 +47,27 @@ export const GET: APIRoute = async ({ url }) => {
     'origen',
   ];
 
-  const lines = [
-    header.join(','),
-    ...rows.map((lead) =>
-      [
-        csvCell(lead.createdAt.toISOString()),
-        csvCell(lead.fullName),
-        csvCell(lead.email),
-        csvCell(getCountry(lead.country)?.name ?? lead.country),
-        csvCell(lead.country),
-        csvCell(lead.bikeName),
-        csvCell(lead.status),
-        csvCell(lead.utmSource),
-      ].join(',')
-    ),
-  ];
+  const body = csvFile(
+    header,
+    rows.map((lead) => [
+      lead.createdAt.toISOString(),
+      lead.fullName,
+      lead.email,
+      getCountry(lead.country)?.name ?? lead.country,
+      lead.country,
+      lead.bikeName,
+      lead.status,
+      lead.utmSource,
+    ])
+  );
 
   const stamp = new Date().toISOString().slice(0, 10);
 
-  return new Response(
-    // BOM al principio: sin esto Excel abre el CSV en Latin-1 y rompe las
-    // tildes y las eñes.
-    '﻿' + lines.join('\r\n'),
-    {
-      headers: {
-        'content-type': 'text/csv; charset=utf-8',
-        'content-disposition': `attachment; filename="leads-${stamp}.csv"`,
-        'cache-control': 'no-store',
-      },
-    }
-  );
+  return new Response(body, {
+    headers: {
+      'content-type': 'text/csv; charset=utf-8',
+      'content-disposition': `attachment; filename="leads-${stamp}.csv"`,
+      'cache-control': 'no-store',
+    },
+  });
 };

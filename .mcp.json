@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "playwright-mcp",
+        "--isolated",
+        "--browser", "chrome",
+        "--viewport-size", "1440x900",
+        "--allowed-origins", "http://localhost:4321",
+        "--output-dir", "tests/e2e/output"
+      ]
+    }
+  }
+}

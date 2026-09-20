@@ -101,7 +101,11 @@ npm run dev
 | `npm run build` | Build de producción |
 | `npm run preview` | Sirve el build localmente |
 | `npm run check` | Errores de tipos |
-| `npm run test` | Pruebas de humo (necesita `npm run dev` corriendo) |
+| `npm test` | 173 pruebas: unitarias e integración |
+| `npm run test:unit` | Solo las unitarias |
+| `npm run test:integration` | Solo las de integración |
+| `npm run test:watch` | Modo watch, para desarrollar |
+| `npm run test:smoke` | Humo contra el server de dev (necesita `npm run dev`) |
 | `npm run inspect` | Peso del build, imágenes y SEO |
 | `npm run db:generate` | Genera una migración tras cambiar el schema |
 | `npm run db:migrate` | Aplica las migraciones |
@@ -165,6 +169,32 @@ lo que funciona en un entorno serverless. PGlite en desarrollo para que quien
 clone el repositorio pueda levantarlo y probar el flujo completo sin crear
 cuentas. Es el mismo SQL y el mismo ORM: el código de la aplicación no sabe
 cuál de las dos está usando.
+
+## Testing
+
+Tres capas:
+
+| Capa | Herramienta | Cuántas | Comando |
+|---|---|---|---|
+| Unitaria | Vitest | 118 | `npm run test:unit` |
+| Integración | Vitest | 55 | `npm run test:integration` |
+| End-to-end | MCP de Playwright | 16 escenarios | manual, ver abajo |
+
+Las de integración corren contra un Postgres real: **PGlite en memoria**, con
+las mismas migraciones que producción. No hace falta levantar nada.
+
+```bash
+npm test
+```
+
+Los escenarios end-to-end están en
+[`tests/e2e/scenarios.md`](tests/e2e/scenarios.md) y los ejecuta el agente con
+el MCP de Playwright, que ya viene configurado en `.mcp.json` contra el Chrome
+del sistema. Necesitan el sitio levantado:
+
+```bash
+npm run dev
+```
 
 ## Documentación relacionada
 

@@ -180,19 +180,51 @@ scripts/               migrate · fetch-bike-images · gen-countries · smoke-te
 Tres capas, todas locales. Ninguna funcionalidad nueva se da por terminada sin
 la prueba que le corresponde.
 
-| Capa | Herramienta | Qué cubre |
-|---|---|---|
-| Unitaria | Vitest | Funciones puras: validación Zod, firma de sesión, rate limit, escape de CSV, helpers del catálogo |
-| Integración | Vitest | Los endpoints reales contra una base PGlite en memoria: inserción, rechazos, anti-spam, export |
-| End-to-end | MCP de Playwright | Los recorridos completos en el navegador: cargar un lead desde la landing y verlo aparecer en el panel |
+| Capa | Herramienta | Cuántas | Qué cubre |
+|---|---|---|---|
+| Unitaria | Vitest | 118 | Funciones puras: validación Zod, firma de sesión, rate limit, escape de CSV, catálogos |
+| Integración | Vitest | 55 | Los handlers reales contra un Postgres de verdad en memoria |
+| End-to-end | MCP de Playwright | 16 escenarios | Los recorridos completos en el navegador, de la landing al panel |
 
-> **Estado: sin instalar.** Las reglas 8 y 9 ya rigen, pero `vitest` y
-> `@playwright/mcp` todavía no son dependencias del proyecto y los comandos de
-> abajo no existen. Hasta que se instalen, lo único que corre es
-> `npm run test` (pruebas de humo con `node`, ver `scripts/smoke-test.mjs`).
->
-> El MCP de Playwright se registra al iniciar la sesión: después de instalarlo
-> y agregarlo a `.mcp.json` hay que reiniciar Claude Code para poder usarlo.
+```bash
+npm test               # unitarias + integración
+npm run test:unit
+npm run test:integration
+npm run test:watch     # durante el desarrollo
+npm run test:smoke     # humo contra el server de dev (necesita npm run dev)
+```
+
+### Integración: base real, no imitación
+
+`tests/integration/` levanta **PGlite en memoria** y le aplica las migraciones
+de `drizzle/`, las mismas que corren en producción. Lo que se prueba es el SQL
+que genera Drizzle: si una columna cambia de tipo o falta un índice, falla acá.
+
+Los handlers se importan y se invocan con un `Request` real. El contexto de
+Astro se arma a mano, solo con lo que cada handler consume.
+
+`setupEnv()` tiene que llamarse **antes** de importar cualquier módulo que lea
+`process.env`: `src/db` cachea el cliente en el primer uso.
+
+### End-to-end: escenarios, no improvisación
+
+Los 16 escenarios están en [`tests/e2e/scenarios.md`](tests/e2e/scenarios.md)
+con pasos y resultado esperado. Se ejecutan con el MCP de Playwright, ya
+configurado en `.mcp.json` contra el Chrome del sistema (no hace falta
+descargar navegadores).
+
+Corren sobre el sitio levantado:
+
+```bash
+npm run db:seed -- --reset   # con el servidor frenado
+npm run dev
+```
+
+> El MCP se registra al iniciar la sesión. Si acabás de clonar el repo,
+> reiniciá Claude Code para que aparezcan sus herramientas.
+
+Es una capa que ejecuta el agente, no un CI: `npm test` no la incluye. Correrla
+igual antes de dar una tarea por terminada.
 
 ## Antes de dar algo por terminado
 
@@ -200,12 +232,12 @@ Correr **todo**, no solo lo que tocaste:
 
 ```bash
 npm run check    # 0 errores de tipos
+npm test         # 173 pruebas: unitarias + integración
 npm run build    # sin fallos
-npm run test     # pruebas de humo (necesita npm run dev en otra terminal)
 npm run inspect  # dentro del presupuesto de rendimiento
 ```
 
-Y los recorridos end-to-end con el MCP de Playwright.
+Y los escenarios de `tests/e2e/scenarios.md` con el MCP de Playwright.
 
 Si algo queda en rojo, mostrá la salida y decilo. Una tarea con tests fallando
 no está terminada.
