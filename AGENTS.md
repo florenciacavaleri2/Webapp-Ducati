@@ -42,6 +42,9 @@ Instrucciones para cualquier agente de IA que trabaje en este repositorio.
     comportamiento distinto, variable de entorno, comando: el README describe
     lo que el proyecto hace hoy, y los cambios visibles se anotan en
     "Cambios recientes". Lo interno del proceso va acá, no ahí.
+12. **Se trabaja en `dev`, nunca directo en `main`.** Antes de tocar nada,
+    verificá con `git branch --show-current`. `main` queda como la rama
+    estable y solo recibe cambios ya probados desde `dev`.
 
 ### Por qué las reglas 5 y 6 no son decorativas
 
@@ -247,6 +250,32 @@ eso está `scripts/serve-build.mjs`, que sirve `dist/client` como estático.
 
 Es una capa que ejecuta el agente, no un CI: `npm test` no la incluye. Correrla
 igual antes de dar por terminado un cambio de código.
+
+## Ramas
+
+El repositorio está en
+[florenciacavaleri2/Webapp-Ducati](https://github.com/florenciacavaleri2/Webapp-Ducati),
+privado.
+
+| Rama | Para qué |
+|---|---|
+| `dev` | Donde se trabaja. Todo commit nuevo va acá. |
+| `main` | Rama estable. Solo recibe lo que ya pasó por `dev`. |
+
+```bash
+git branch --show-current   # confirmá que dice dev antes de empezar
+```
+
+Para llevar lo de `dev` a `main` cuando algo está listo y con los tests en
+verde:
+
+```bash
+git switch main && git merge --ff-only dev && git push origin main
+git switch dev
+```
+
+`--ff-only` es a propósito: si falla, es que `main` recibió algo por afuera y
+hay que mirarlo en vez de generar un merge sorpresa.
 
 ## Lo aprendido a los golpes
 
