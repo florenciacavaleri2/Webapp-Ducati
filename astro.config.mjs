@@ -4,9 +4,41 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * URL pública del sitio, para el canonical, el sitemap y los datos
+ * estructurados.
+ *
+ * Astro exige una URL absoluta y válida: si no lo es, **falla todo el build**
+ * con un escueto "Invalid URL". Dos errores fáciles la rompen —dejar la
+ * variable vacía (que `??` no atrapa, porque solo cubre null y undefined) o
+ * escribirla sin `https://`—, así que acá se valida de verdad y se cae a la
+ * siguiente opción en vez de tumbar el despliegue.
+ *
+ * En Vercel no hace falta configurar nada: `VERCEL_PROJECT_PRODUCTION_URL` la
+ * pone la plataforma sola.
+ */
+function resolverSite() {
+  const candidatos = [
+    process.env.PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+      `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`,
+    process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
+    'http://localhost:4321',
+  ];
+
+  for (const candidato of candidatos) {
+    if (!candidato) continue;
+    try {
+      return new URL(candidato).href;
+    } catch {
+      console.warn(`[config] PUBLIC_SITE_URL inválida: ${JSON.stringify(candidato)}`);
+    }
+  }
+}
+
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.PUBLIC_SITE_URL ?? 'https://ducati-leads.vercel.app',
+  site: resolverSite(),
 
   // 'static' prerenderiza todo por defecto. Las rutas que necesitan servidor
   // (/api/* y /admin/*) se marcan una por una con `export const prerender = false`.

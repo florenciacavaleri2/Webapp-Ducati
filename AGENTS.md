@@ -343,6 +343,15 @@ escenarios: si dejás el formulario sucio de la prueba anterior, el siguiente
 falla por tu culpa y no del producto. Ante un rojo sospechoso, reproducilo
 desde carga limpia antes de reportarlo.
 
+**Una variable de entorno mal puesta puede tumbar el build entero.** La opción
+`site` de Astro exige una URL absoluta válida; si no lo es, el build muere con
+un escueto `! Invalid URL` que no dice cuál. Pasó con `PUBLIC_SITE_URL` vacía
+—`??` solo cubre `null` y `undefined`, no la cadena vacía— y también sin el
+`https://`. Ahora `astro.config.mjs` la valida y cae a
+`VERCEL_PROJECT_PRODUCTION_URL` en vez de fallar. Moraleja general: todo valor
+que venga del entorno y se use en configuración se valida antes, porque el
+error aparece en el despliegue y no en local.
+
 **Vercel bloquea el despliegue si el email del commit no está en la cuenta de
 GitHub.** El mensaje es *"El despliegue se bloqueó porque el correo electrónico
 de confirmación no coincidía con una cuenta de GitHub"*, y no importa que el
