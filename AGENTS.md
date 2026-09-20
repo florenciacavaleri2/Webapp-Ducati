@@ -76,6 +76,7 @@ npm run test           # pruebas de humo contra el server de dev
 npm run inspect        # radiografía del build: peso, imágenes, SEO
 npm run db:generate    # genera la migración desde src/db/schema.ts
 npm run db:migrate     # la aplica
+npm run db:seed        # carga 28 leads de ejemplo (solo desarrollo)
 npm run db:studio      # explorador de la base (Drizzle Studio)
 npm run bikes:images   # baja las fotos de los modelos del CDN
 ```
@@ -142,6 +143,9 @@ moto: agregá la entrada, corré `npm run bikes:images` y listo.
 - `drizzle/` — lo genera `npm run db:generate`.
 - `src/data/countries.ts` — lo genera `scripts/gen-countries.mjs`.
 - `src/assets/bikes/` — lo baja `npm run bikes:images`.
+- `.data/` — la base local de PGlite. Si algo se rompe, borrala y corré
+  `npm run db:migrate`. Con PGlite solo un proceso puede tener la base
+  abierta: frená el servidor de desarrollo antes de migrar o sembrar.
 - `public/fonts/` — copiado de `node_modules/@fontsource*`. Si cambia una
   tipografía, actualizá también el `@font-face` y el `preload` de `Base.astro`.
 

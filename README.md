@@ -64,11 +64,20 @@ npm run db:migrate
 npm run bikes:images
 ```
 
+Si querés ver el panel con datos en vez de vacío, cargá los leads de ejemplo:
+
+```bash
+npm run db:seed
+```
+
 Y arrancá:
 
 ```bash
 npm run dev
 ```
+
+> Con PGlite solo un proceso puede abrir la base a la vez. Frená el servidor
+> de desarrollo antes de correr `db:migrate` o `db:seed`.
 
 - Landing: http://localhost:4321
 - Panel: http://localhost:4321/admin (entrá con el `ADMIN_PASSWORD` de tu `.env`)
@@ -96,6 +105,7 @@ npm run dev
 | `npm run inspect` | Peso del build, imágenes y SEO |
 | `npm run db:generate` | Genera una migración tras cambiar el schema |
 | `npm run db:migrate` | Aplica las migraciones |
+| `npm run db:seed` | Carga 28 leads de ejemplo para ver el panel con datos |
 | `npm run db:studio` | Explorador visual de la base |
 | `npm run bikes:images` | Descarga las fotos de los modelos |
 

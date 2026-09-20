@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); npm run dev)",
+      "PowerShell($env:PATH = [Environment]::GetEnvironmentVariable\\('PATH','Machine'\\) + ';' + [Environment]::GetEnvironmentVariable\\('PATH','User'\\); Start-Sleep -Seconds 7; try { \"HTTP \" + \\(Invoke-WebRequest -Uri \"http://localhost:4321/\" -UseBasicParsing -TimeoutSec 10\\).StatusCode } catch { \"no responde\" })"
+    ]
+  }
+}
