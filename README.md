@@ -39,6 +39,14 @@ cd Webapp-Ducati && npm install
 ```
 
 ```bash
+git config core.hooksPath .githooks
+```
+
+Ese último comando activa un hook que protege la rama `main` de borrados,
+reescrituras de historial y commits que no hayan pasado por `dev`. Hay que
+correrlo una vez por clon.
+
+```bash
 cp .env.example .env
 ```
 

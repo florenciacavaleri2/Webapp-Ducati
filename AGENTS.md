@@ -277,6 +277,32 @@ git switch dev
 `--ff-only` es a propósito: si falla, es que `main` recibió algo por afuera y
 hay que mirarlo en vez de generar un merge sorpresa.
 
+### La protección de main es local
+
+GitHub **no permite proteger ramas en repositorios privados con cuenta
+gratuita**: tanto la protección clásica como los rulesets devuelven
+`403 Upgrade to GitHub Pro`. Así que la barrera vive en un hook, en
+`.githooks/pre-push`.
+
+Se activa una vez por clon:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Al empujar a `main` bloquea tres cosas: borrar la rama, reescribir el
+historial, y subir commits que no estén en `dev`. El `merge --ff-only` de
+arriba pasa sin problema. Los push a `dev` no se tocan.
+
+Salida de emergencia, cuando hace falta de verdad:
+
+```bash
+PERMITIR_PUSH_MAIN=1 git push origin main
+```
+
+No sustituye a la protección del servidor: frena errores propios en este clon,
+no a alguien decidido ni a un clon nuevo sin el hook activado.
+
 ## Lo aprendido a los golpes
 
 Trampas reales de este proyecto, cada una costó tiempo una vez. Agregá las

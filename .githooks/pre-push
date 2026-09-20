@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# Protege `main` desde esta máquina.
+#
+# GitHub no deja proteger ramas en repositorios privados con cuenta gratuita,
+# así que la barrera vive acá. No reemplaza a la protección del servidor: solo
+# frena errores propios en este clon, no a alguien decidido ni a otro clon.
+#
+# Se activa con:  git config core.hooksPath .githooks
+#
+# Bloquea tres cosas al empujar a main:
+#   1. Borrar la rama.
+#   2. Reescribir el historial (force push).
+#   3. Subir commits que no estén en `dev`, o sea: trabajo hecho directo sobre
+#      main en vez de pasar por dev (regla 12 de AGENTS.md).
+#
+# El merge --ff-only desde dev pasa sin problema: ahí main queda contenido
+# en dev y las tres condiciones se cumplen.
+#
+# Salida de emergencia:  PERMITIR_PUSH_MAIN=1 git push ...
+
+VACIO="0000000000000000000000000000000000000000"
+
+if [ "$PERMITIR_PUSH_MAIN" = "1" ]; then
+  echo "pre-push: PERMITIR_PUSH_MAIN=1, se saltea la protección de main." >&2
+  exit 0
+fi
+
+while read -r _ref_local sha_local ref_remoto sha_remoto; do
+  [ "$ref_remoto" = "refs/heads/main" ] || continue
+
+  if [ "$sha_local" = "$VACIO" ]; then
+    echo "" >&2
+    echo "  Bloqueado: estás borrando la rama main." >&2
+    echo "  Si es a propósito: PERMITIR_PUSH_MAIN=1 git push ..." >&2
+    echo "" >&2
+    exit 1
+  fi
+
+  # Force push: lo que hay en el remoto dejaría de ser ancestro de lo local.
+  if [ "$sha_remoto" != "$VACIO" ] &&
+     ! git merge-base --is-ancestor "$sha_remoto" "$sha_local" 2>/dev/null; then
+    echo "" >&2
+    echo "  Bloqueado: esto reescribiría el historial de main." >&2
+    echo "  Alguien más pudo haber subido algo. Mirá 'git log origin/main'" >&2
+    echo "  antes de insistir." >&2
+    echo "" >&2
+    exit 1
+  fi
+
+  # Todo lo que va a main tiene que existir ya en dev.
+  if git show-ref --verify --quiet refs/heads/dev &&
+     ! git merge-base --is-ancestor "$sha_local" refs/heads/dev 2>/dev/null; then
+    echo "" >&2
+    echo "  Bloqueado: main tiene commits que no están en dev." >&2
+    echo "  Se trabaja en dev (regla 12 de AGENTS.md). Para promover:" >&2
+    echo "" >&2
+    echo "    git switch main && git merge --ff-only dev" >&2
+    echo "" >&2
+    exit 1
+  fi
+done
+
+exit 0
