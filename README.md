@@ -31,7 +31,11 @@ proyecto es el posicionamiento en Google y las Core Web Vitals.
 ## Puesta en marcha
 
 ```bash
-npm install
+git clone https://github.com/florenciacavaleri2/Webapp-Ducati.git
+```
+
+```bash
+cd Webapp-Ducati && npm install
 ```
 
 ```bash
@@ -203,6 +207,10 @@ detalle interno.
 
 ### 20/09/2026
 
+- **El proyecto vive en GitHub**, en un repositorio privado:
+  [florenciacavaleri2/Webapp-Ducati](https://github.com/florenciacavaleri2/Webapp-Ducati).
+  Privado a propósito: el repositorio incluye fotografías y denominaciones de
+  modelo que son propiedad de Ducati Motor Holding S.p.A.
 - **Tres capas de pruebas.** 118 unitarias y 55 de integración con Vitest
   (`npm test`), más 16 escenarios end-to-end en
   [`tests/e2e/scenarios.md`](tests/e2e/scenarios.md) que se corren con el MCP

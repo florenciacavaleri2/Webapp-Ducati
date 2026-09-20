@@ -29,3 +29,8 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Permisos que cada persona aprueba en su propia máquina.
+# El resto de .claude/ sí se versiona: las skills y launch.json son del
+# proyecto y le sirven a cualquiera que lo clone.
+.claude/settings.local.json
