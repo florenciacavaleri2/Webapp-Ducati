@@ -25,6 +25,12 @@ Instrucciones para cualquier agente de IA que trabaje en este repositorio.
 7. **Para todo lo de branding y UI, `DESIGN.md` manda.** Colores, tipografías,
    espaciados, radios, componentes. Si falta un token, agregalo primero a
    `DESIGN.md` y después usalo.
+8. **Para e2e usá el MCP de Playwright; para unitarios e integración, Vitest.**
+   Son pruebas locales que ejecuta el agente. Toda funcionalidad nueva viene
+   con su prueba en la capa que corresponda.
+9. **Nunca des una tarea por terminada sin correr los tests completos.** Las
+   tres capas, no solo la que tocaste. Si algo queda en rojo, decilo con la
+   salida a la vista en lugar de declarar el trabajo listo.
 
 ### Por qué las reglas 5 y 6 no son decorativas
 
@@ -169,11 +175,37 @@ src/
 scripts/               migrate · fetch-bike-images · gen-countries · smoke-test · inspect-build
 ```
 
+## Testing
+
+Tres capas, todas locales. Ninguna funcionalidad nueva se da por terminada sin
+la prueba que le corresponde.
+
+| Capa | Herramienta | Qué cubre |
+|---|---|---|
+| Unitaria | Vitest | Funciones puras: validación Zod, firma de sesión, rate limit, escape de CSV, helpers del catálogo |
+| Integración | Vitest | Los endpoints reales contra una base PGlite en memoria: inserción, rechazos, anti-spam, export |
+| End-to-end | MCP de Playwright | Los recorridos completos en el navegador: cargar un lead desde la landing y verlo aparecer en el panel |
+
+> **Estado: sin instalar.** Las reglas 8 y 9 ya rigen, pero `vitest` y
+> `@playwright/mcp` todavía no son dependencias del proyecto y los comandos de
+> abajo no existen. Hasta que se instalen, lo único que corre es
+> `npm run test` (pruebas de humo con `node`, ver `scripts/smoke-test.mjs`).
+>
+> El MCP de Playwright se registra al iniciar la sesión: después de instalarlo
+> y agregarlo a `.mcp.json` hay que reiniciar Claude Code para poder usarlo.
+
 ## Antes de dar algo por terminado
 
+Correr **todo**, no solo lo que tocaste:
+
 ```bash
-npm run check    # 0 errores
+npm run check    # 0 errores de tipos
 npm run build    # sin fallos
-npm run test     # 23 pruebas en verde (necesita npm run dev en otra terminal)
-npm run inspect  # dentro del presupuesto
+npm run test     # pruebas de humo (necesita npm run dev en otra terminal)
+npm run inspect  # dentro del presupuesto de rendimiento
 ```
+
+Y los recorridos end-to-end con el MCP de Playwright.
+
+Si algo queda en rojo, mostrá la salida y decilo. Una tarea con tests fallando
+no está terminada.
