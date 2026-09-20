@@ -1,0 +1,126 @@
+---
+import { FAMILIES } from '../data/bikes';
+---
+
+<footer class="footer">
+  <div class="container-site footer-grid">
+    <div class="footer-brand">
+      <span class="brand">Ducati<span>Argentina</span></span>
+      <p>
+        Red oficial de concesionarios. Coordinamos la prueba de manejo, la
+        cotización y la entrega de tu moto.
+      </p>
+    </div>
+
+    <nav aria-labelledby="footer-modelos">
+      <h2 id="footer-modelos">Modelos</h2>
+      <ul>
+        {FAMILIES.map((f) => <li><a href="#modelos">{f}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="footer-contacto">
+      <h2 id="footer-contacto">Contacto</h2>
+      <ul>
+        <li><a href="#contacto">Pedir cotización</a></li>
+        <li><a href="tel:+541155550100">+54 11 5555-0100</a></li>
+        <li><a href="mailto:ventas@ejemplo.com">ventas@ejemplo.com</a></li>
+        <li>Av. del Libertador 1234, CABA</li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container-site footer-legal">
+    <p>
+      Proyecto académico sin fines comerciales. Ducati es una marca registrada
+      de Ducati Motor Holding S.p.A.; las fotografías y denominaciones de los
+      modelos son propiedad de su titular y se usan solo con fines educativos.
+      Este sitio no está afiliado a Ducati Motor Holding S.p.A.
+    </p>
+    <p>Precios de referencia en dólares, sujetos a cambios sin previo aviso.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-primary);
+    color: var(--color-neutral-300);
+    padding-block: 56px 32px;
+    font-size: var(--text-body-sm);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: 40px;
+  }
+
+  .footer-brand p {
+    margin-top: 12px;
+    max-width: 38ch;
+    line-height: 1.55;
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-neutral-0);
+  }
+
+  .brand span {
+    color: var(--color-secondary);
+    margin-left: 0.4em;
+  }
+
+  .footer h2 {
+    font-size: var(--text-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-0);
+    margin-bottom: 14px;
+  }
+
+  .footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .footer a {
+    color: var(--color-neutral-300);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    color: var(--color-neutral-0);
+    text-decoration: underline;
+  }
+
+  .footer-legal {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+    color: var(--color-neutral-500);
+    display: grid;
+    gap: 8px;
+  }
+
+  .footer-legal p {
+    max-width: 90ch;
+    line-height: 1.5;
+    /* #777 sobre navy da contraste suficiente; no bajar más. */
+    color: #9aa4b1;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+    }
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import Admin from '../../layouts/Admin.astro';
+import {
+  SESSION_COOKIE,
+  SESSION_COOKIE_OPTIONS,
+  createSessionToken,
+  verifyPassword,
+} from '../../lib/session';
+import { checkRateLimit, clientIp } from '../../lib/rate-limit';
+
+export const prerender = false;
+
+let error: string | null = null;
+
+// Solo aceptamos rutas internas: un `next` con http:// convertiría el login
+// en un redirector abierto hacia cualquier dominio.
+const requested = Astro.url.searchParams.get('next') ?? '/admin';
+const next = requested.startsWith('/') && !requested.startsWith('//')
+  ? requested
+  : '/admin';
+
+if (Astro.request.method === 'POST') {
+  const limit = checkRateLimit(`login:${clientIp(Astro.request)}`);
+
+  if (!limit.allowed) {
+    error = `Demasiados intentos. Esperá ${Math.ceil(limit.retryAfterSeconds / 60)} minutos.`;
+  } else {
+    const form = await Astro.request.formData();
+    const password = String(form.get('password') ?? '');
+
+    if (verifyPassword(password)) {
+      Astro.cookies.set(
+        SESSION_COOKIE,
+        await createSessionToken(),
+        SESSION_COOKIE_OPTIONS
+      );
+      return Astro.redirect(next, 302);
+    }
+
+    error = 'Contraseña incorrecta.';
+  }
+}
+---
+
+<Admin title="Ingresar" showNav={false}>
+  <div class="login">
+    <h1>Panel de leads</h1>
+    <p class="login-intro">Ingresá la contraseña del equipo comercial.</p>
+
+    <form method="POST" class="login-form">
+      {error && <p class="login-error" role="alert">{error}</p>}
+
+      <div>
+        <label class="field-label" for="password">Contraseña</label>
+        <input
+          class="field-input"
+          type="password"
+          id="password"
+          name="password"
+          required
+          autocomplete="current-password"
+          autofocus
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Ingresar</button>
+    </form>
+  </div>
+</Admin>
+
+<style>
+  .login {
+    max-width: 380px;
+    margin: 8vh auto 0;
+    background: var(--color-neutral-0);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-md);
+    padding: 32px 28px;
+  }
+
+  .login h1 {
+    font-size: var(--text-heading-md);
+  }
+
+  .login-intro {
+    margin-top: 8px;
+    font-size: var(--text-body-sm);
+    color: var(--color-neutral-500);
+  }
+
+  .login-form {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .login-error {
+    padding: 12px 14px;
+    border: 1px solid var(--color-error);
+    border-radius: var(--radius-sm);
+    background: #fdecec;
+    color: #8e1d1d;
+    font-size: var(--text-body-sm);
+  }
+
+  .login-form .btn {
+    width: 100%;
+  }
+</style>

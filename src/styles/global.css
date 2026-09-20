@@ -1,0 +1,298 @@
+@import 'tailwindcss';
+
+/* ===========================================================================
+   Sistema visual — traducción literal de DESIGN.md a tokens de Tailwind 4.
+   No inventar valores acá: si falta un token, agregarlo primero a DESIGN.md.
+   =========================================================================== */
+
+/* --- Fuentes auto-hosteadas -------------------------------------------------
+   Copiadas de node_modules/@fontsource* a public/fonts (ver AGENTS.md).
+   Se sirven desde nuestro dominio y se precargan en Base.astro: usar Google
+   Fonts metería un dominio extra en el critical path y empeoraría el LCP. */
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/barlow-condensed-latin-600-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme {
+  /* Reseteamos la paleta por defecto de Tailwind: solo existe la de DESIGN.md.
+     Así es imposible usar por accidente un `bg-slate-700` que no es de marca. */
+  --color-*: initial;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-primary: #061a33;
+  --color-primary-light: #0b4b86;
+  --color-secondary: #e10600;
+  --color-secondary-dark: #b80000;
+
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f5f5f5;
+  --color-neutral-100: #e9e9e9;
+  --color-neutral-300: #c7c7c7;
+  --color-neutral-500: #777777;
+  --color-neutral-800: #222222;
+  --color-neutral-950: #0a0a0a;
+
+  --color-success: #167a4a;
+  --color-warning: #b77900;
+  --color-error: #c62828;
+
+  /* Tipografía */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Escala tipográfica. Los tamaños fluidos hacen el salto que DESIGN.md
+     define para <768px sin media queries, y sin provocar CLS. */
+  --text-display-xl: clamp(2.625rem, 1.62rem + 3.35vw, 4rem);
+  --text-display-xl--line-height: 0.98;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--font-weight: 600;
+
+  --text-display-lg: clamp(2.25rem, 1.66rem + 1.95vw, 3.25rem);
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.015em;
+  --text-display-lg--font-weight: 600;
+
+  --text-heading-lg: clamp(2rem, 1.71rem + 0.98vw, 2.5rem);
+  --text-heading-lg--line-height: 1.05;
+  --text-heading-lg--font-weight: 600;
+
+  --text-heading-md: clamp(1.625rem, 1.48rem + 0.49vw, 1.875rem);
+  --text-heading-md--line-height: 1.1;
+  --text-heading-md--font-weight: 600;
+
+  --text-heading-sm: 1.5rem;
+  --text-heading-sm--line-height: 1.15;
+  --text-heading-sm--font-weight: 600;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.55;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.5;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.45;
+
+  --text-label: 0.875rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 600;
+
+  /* Formas: lenguaje "sharp and engineered", 2–4px. */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* Sombras: por defecto ninguna. Solo elevación funcional. */
+  --shadow-card: 0 2px 12px rgb(6 26 51 / 0.1);
+  --shadow-overlay: 0 8px 28px rgb(6 26 51 / 0.18);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-neutral-0);
+    color: var(--color-neutral-800);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-md);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-neutral-950);
+    text-wrap: balance;
+  }
+
+  /* Foco visible en todo control interactivo: requisito de accesibilidad. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+  }
+
+  /* Los precios y specs se leen en columna: cifras de ancho fijo. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Contenedor: máx 1440px, márgenes 56 / 32 / 20px según DESIGN.md. */
+  .container-site {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .container-site {
+      padding-inline: 32px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-site {
+      padding-inline: 56px;
+    }
+  }
+
+  /* Botones: controles físicos, 52px desktop / 44px mínimo táctil. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 28px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+
+  @media (min-width: 768px) {
+    .btn {
+      min-height: 52px;
+    }
+  }
+
+  .btn-primary {
+    background-color: var(--color-secondary);
+    color: var(--color-neutral-0);
+    border: 1px solid var(--color-secondary);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-secondary-dark);
+    border-color: var(--color-secondary-dark);
+  }
+
+  .btn-primary:disabled {
+    background-color: var(--color-neutral-300);
+    border-color: var(--color-neutral-300);
+    color: var(--color-neutral-0);
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: var(--color-neutral-0);
+    color: var(--color-neutral-950);
+    border: 1px solid var(--color-neutral-950);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  /* Campos de formulario */
+  .field-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-800);
+    margin-bottom: 6px;
+  }
+
+  .field-input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    background-color: var(--color-neutral-0);
+    color: var(--color-neutral-950);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-md);
+    transition: border-color 120ms ease;
+  }
+
+  .field-input:hover {
+    border-color: var(--color-neutral-500);
+  }
+
+  .field-input:focus {
+    border-color: var(--color-primary-light);
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: -1px;
+  }
+
+  .field-input[aria-invalid='true'] {
+    border-color: var(--color-error);
+  }
+
+  .field-error {
+    display: block;
+    margin-top: 6px;
+    font-size: var(--text-body-sm);
+    color: var(--color-error);
+  }
+
+  .field-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: var(--text-body-sm);
+    color: var(--color-neutral-500);
+  }
+
+  /* Select nativo: chevron propio, sin depender de la UI del sistema. */
+  select.field-input {
+    appearance: none;
+    padding-right: 42px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23222' stroke-width='1.75' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+}

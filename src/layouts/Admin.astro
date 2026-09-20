@@ -1,0 +1,116 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  /** El login no muestra la barra de sesión. */
+  showNav?: boolean;
+}
+
+const { title, showNav = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — Panel Ducati</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+
+  <body class="admin-body">
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <span class="admin-brand">Ducati<span>Panel</span></span>
+        {
+          showNav && (
+            <form method="POST" action="/admin/logout">
+              <button type="submit" class="admin-logout">
+                Cerrar sesión
+              </button>
+            </form>
+          )
+        }
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .admin-body {
+    background: var(--color-neutral-50);
+    min-height: 100vh;
+  }
+
+  .admin-header {
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+  }
+
+  .admin-header-inner {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 0 20px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .admin-brand span {
+    color: var(--color-secondary);
+    margin-left: 0.4em;
+  }
+
+  .admin-logout {
+    background: none;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: var(--radius-sm);
+    color: var(--color-neutral-0);
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+
+  .admin-logout:hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .admin-main {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 28px 20px 64px;
+  }
+
+  @media (min-width: 1024px) {
+    .admin-header-inner,
+    .admin-main {
+      padding-inline: 56px;
+    }
+  }
+</style>

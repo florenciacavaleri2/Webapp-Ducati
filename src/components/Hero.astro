@@ -1,0 +1,147 @@
+---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/bikes/_hero-panigale-v4.webp';
+---
+
+<section class="hero">
+  <Image
+    src={heroImage}
+    alt="Ducati Panigale V4 inclinada en el vértice de una curva de circuito"
+    class="hero-image"
+    widths={[768, 1200, 1600]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    decoding="sync"
+  />
+
+  <div class="hero-overlay"></div>
+
+  <div class="container-site hero-content">
+    <p class="hero-eyebrow">Gama 2026 disponible en Argentina</p>
+    <h1>Elegí tu Ducati y te contactamos hoy</h1>
+    <p class="hero-lead">
+      Veintidós modelos oficiales, de la Monster a la Panigale V4 R. Decinos
+      cuál te interesa y un asesor te pasa precio, financiación y fecha de
+      entrega.
+    </p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn btn-primary">Pedir cotización</a>
+      <a href="#modelos" class="hero-link">Ver los 22 modelos</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 520px;
+    height: 72vh;
+    max-height: 700px;
+    overflow: hidden;
+    background: var(--color-primary);
+  }
+
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* La moto está a la izquierda del encuadre; en pantallas angostas
+       conviene mantener visible ese lado. */
+    object-position: 38% center;
+  }
+
+  /* Degradado de izquierda a derecha para que el titular blanco se lea
+     sobre la foto sin oscurecerla entera. */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgb(6 26 51 / 0.88) 0%,
+      rgb(6 26 51 / 0.72) 38%,
+      rgb(6 26 51 / 0.24) 68%,
+      rgb(6 26 51 / 0.06) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    padding-block: 48px 56px;
+    color: var(--color-neutral-0);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-0);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    max-width: 720px;
+    font-size: var(--text-display-xl);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--color-neutral-0);
+  }
+
+  .hero-lead {
+    max-width: 52ch;
+    margin-top: 20px;
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    color: var(--color-neutral-100);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 32px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .hero-link {
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-0);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  @media (min-width: 480px) {
+    .hero-actions .btn {
+      width: auto;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      min-height: 620px;
+      align-items: center;
+    }
+
+    .hero-image {
+      object-position: center;
+    }
+
+    .hero-content {
+      padding-block: 0;
+    }
+  }
+</style>

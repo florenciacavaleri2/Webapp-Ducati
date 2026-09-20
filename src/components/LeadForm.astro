@@ -1,0 +1,454 @@
+---
+import { bikesByFamily, formatPrice } from '../data/bikes';
+import { countriesForSelect } from '../data/countries';
+
+/**
+ * Formulario de contacto.
+ *
+ * Es un <form method="POST"> real contra /api/leads: sin JavaScript se
+ * envía igual y el endpoint redirige a /gracias. El script de abajo solo
+ * lo mejora (validación en vivo, envío sin recargar) y es lo único que
+ * se descarga en toda la landing.
+ */
+
+const groups = bikesByFamily();
+const { priority, rest } = countriesForSelect();
+---
+
+<section id="contacto" class="contact">
+  <div class="container-site contact-inner">
+    <div class="contact-intro">
+      <h2>Pedí tu cotización</h2>
+      <p>
+        Completá los datos y un asesor de la red oficial te escribe con precio
+        final, opciones de financiación y disponibilidad del modelo.
+      </p>
+      <ul class="contact-points">
+        <li>Respuesta dentro de las 24 horas hábiles.</li>
+        <li>Sin costo y sin compromiso de compra.</li>
+        <li>Coordinamos la prueba de manejo en tu concesionario.</li>
+      </ul>
+    </div>
+
+    <form
+      class="contact-form"
+      id="lead-form"
+      method="POST"
+      action="/api/leads"
+      novalidate
+    >
+      <div
+        class="form-alert"
+        id="form-alert"
+        role="alert"
+        aria-live="polite"
+        hidden
+      >
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="fullName">Nombre completo</label>
+        <input
+          class="field-input"
+          type="text"
+          id="fullName"
+          name="fullName"
+          required
+          autocomplete="name"
+          maxlength="100"
+          aria-describedby="fullName-error"
+        />
+        <span class="field-error" id="fullName-error" hidden></span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="email">Email</label>
+        <input
+          class="field-input"
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="email"
+          maxlength="254"
+          aria-describedby="email-error"
+        />
+        <span class="field-error" id="email-error" hidden></span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="country">País</label>
+        <select
+          class="field-input"
+          id="country"
+          name="country"
+          required
+          autocomplete="country"
+          aria-describedby="country-error"
+        >
+          <option value="">Elegí tu país</option>
+          <optgroup label="Más frecuentes">
+            {
+              priority.map((c) => (
+                <option value={c.code} selected={c.code === 'AR'}>
+                  {c.name}
+                </option>
+              ))
+            }
+          </optgroup>
+          <optgroup label="Todos los países">
+            {rest.map((c) => <option value={c.code}>{c.name}</option>)}
+          </optgroup>
+        </select>
+        <span class="field-error" id="country-error" hidden></span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="bikeSlug">Moto que estás buscando</label>
+        <select
+          class="field-input"
+          id="bikeSlug"
+          name="bikeSlug"
+          required
+          aria-describedby="bikeSlug-error"
+        >
+          <option value="">Elegí un modelo</option>
+          {
+            groups.map((group) => (
+              <optgroup label={group.family}>
+                {group.bikes.map((bike) => {
+                  const price = formatPrice(bike);
+                  return (
+                    <option value={bike.slug}>
+                      {bike.name}
+                      {price ? ` — ${price}` : ''}
+                    </option>
+                  );
+                })}
+              </optgroup>
+            ))
+          }
+        </select>
+        <span class="field-error" id="bikeSlug-error" hidden></span>
+      </div>
+
+      {/* Trampa para bots: invisible para personas, obligatoriamente vacía. */}
+      <div class="honeypot" aria-hidden="true">
+        <label for="company">No completar</label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
+
+      <input type="hidden" name="renderedAt" id="renderedAt" value="" />
+      <input type="hidden" name="utmSource" id="utmSource" value="" />
+
+      <button class="btn btn-primary form-submit" type="submit" id="lead-submit">
+        Pedir cotización
+      </button>
+
+      <p class="form-legal">
+        Al enviar aceptás que un asesor te contacte por email. No compartimos
+        tus datos con terceros.
+      </p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: var(--color-primary);
+    padding-block: 64px;
+    color: var(--color-neutral-0);
+  }
+
+  .contact-inner {
+    display: grid;
+    gap: 40px;
+  }
+
+  .contact-intro h2 {
+    font-size: var(--text-heading-lg);
+    color: var(--color-neutral-0);
+  }
+
+  .contact-intro > p {
+    max-width: 46ch;
+    margin-top: 14px;
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    color: var(--color-neutral-100);
+  }
+
+  .contact-points {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 44ch;
+  }
+
+  .contact-points li {
+    position: relative;
+    padding-left: 22px;
+    color: var(--color-neutral-100);
+    line-height: 1.5;
+  }
+
+  .contact-points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 2px;
+    background: var(--color-secondary);
+  }
+
+  .contact-form {
+    background: var(--color-neutral-0);
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .field {
+    display: block;
+  }
+
+  .form-alert {
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-sm);
+    line-height: 1.5;
+  }
+
+  .form-alert[data-tone='error'] {
+    background: #fdecec;
+    border: 1px solid var(--color-error);
+    color: #8e1d1d;
+  }
+
+  .form-alert[data-tone='success'] {
+    background: #e8f4ee;
+    border: 1px solid var(--color-success);
+    color: #0f5233;
+  }
+
+  /* Fuera de pantalla en vez de display:none: algunos bots ignoran los
+     campos ocultos, pero completan los que el navegador considera visibles. */
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .form-legal {
+    font-size: var(--text-body-sm);
+    line-height: 1.45;
+    color: var(--color-neutral-500);
+  }
+
+  @media (min-width: 1024px) {
+    .contact {
+      padding-block: 96px;
+    }
+
+    .contact-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .contact-form {
+      padding: 36px 32px;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Mejora progresiva del formulario. Es el único JavaScript de la landing.
+   *
+   * A propósito NO importa el esquema de Zod: eso arrastraría Zod y los dos
+   * catálogos al bundle del cliente (~35 KB gzip) para repetir una validación
+   * que el servidor hace igual. Acá alcanza con la validación nativa del
+   * navegador; la verdad la tiene /api/leads, que devuelve los errores por
+   * campo y los mostramos abajo de cada input.
+   */
+
+  const FIELD_NAMES = ['fullName', 'email', 'country', 'bikeSlug'] as const;
+  type FieldName = (typeof FIELD_NAMES)[number];
+
+  const MESSAGES: Record<FieldName, string> = {
+    fullName: 'Ingresá nombre y apellido.',
+    email: 'Revisá el email: falta el @ o el dominio.',
+    country: 'Elegí un país de la lista.',
+    bikeSlug: 'Elegí un modelo de la lista.',
+  };
+
+  const form = document.querySelector<HTMLFormElement>('#lead-form');
+  if (form) {
+    const alertBox = document.querySelector<HTMLElement>('#form-alert')!;
+    const submit = document.querySelector<HTMLButtonElement>('#lead-submit')!;
+    const submitLabel = submit.textContent ?? 'Pedir cotización';
+
+    // El servidor descarta los envíos instantáneos: acá marcamos el momento
+    // real en que la página quedó lista.
+    const renderedAt = form.querySelector<HTMLInputElement>('#renderedAt')!;
+    renderedAt.value = String(Date.now());
+
+    const utm = new URLSearchParams(location.search).get('utm_source');
+    if (utm) {
+      form.querySelector<HTMLInputElement>('#utmSource')!.value = utm.slice(0, 120);
+    }
+
+    const controlOf = (field: FieldName) =>
+      form.elements.namedItem(field) as HTMLInputElement | HTMLSelectElement | null;
+
+    function showFieldError(field: FieldName, message?: string) {
+      const control = controlOf(field);
+      const slot = document.querySelector<HTMLElement>(`#${field}-error`);
+      if (!control || !slot) return;
+
+      if (message) {
+        slot.textContent = message;
+        slot.hidden = false;
+        control.setAttribute('aria-invalid', 'true');
+      } else {
+        slot.textContent = '';
+        slot.hidden = true;
+        control.removeAttribute('aria-invalid');
+      }
+    }
+
+    function clearErrors() {
+      for (const field of FIELD_NAMES) showFieldError(field, undefined);
+      alertBox.hidden = true;
+      alertBox.removeAttribute('data-tone');
+      alertBox.textContent = '';
+    }
+
+    function showAlert(tone: 'error' | 'success', message: string) {
+      alertBox.textContent = message;
+      alertBox.dataset.tone = tone;
+      alertBox.hidden = false;
+    }
+
+    /** Devuelve el mensaje de error del campo, o undefined si está bien. */
+    function validate(field: FieldName): string | undefined {
+      const control = controlOf(field);
+      if (!control) return undefined;
+
+      const value = control.value.trim();
+      if (!value) return MESSAGES[field];
+
+      // `validity` sigue funcionando con novalidate: solo desactiva los
+      // globos del navegador, no la API.
+      if (control.validity.typeMismatch || control.validity.tooLong) {
+        return MESSAGES[field];
+      }
+
+      if (field === 'fullName' && value.split(/\s+/).filter(Boolean).length < 2) {
+        return MESSAGES.fullName;
+      }
+
+      return undefined;
+    }
+
+    // Validación en vivo, pero solo cuando el campo se deja: marcar en rojo
+    // mientras alguien todavía está escribiendo es hostil.
+    for (const field of FIELD_NAMES) {
+      const control = controlOf(field);
+      control?.addEventListener('blur', () => {
+        showFieldError(field, validate(field));
+      });
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors();
+
+      const errors: Partial<Record<FieldName, string>> = {};
+      for (const field of FIELD_NAMES) {
+        const message = validate(field);
+        if (message) errors[field] = message;
+      }
+
+      if (Object.keys(errors).length > 0) {
+        for (const field of FIELD_NAMES) showFieldError(field, errors[field]);
+        showAlert('error', 'Revisá los campos marcados.');
+        controlOf(FIELD_NAMES.find((f) => errors[f]) ?? 'fullName')?.focus();
+        return;
+      }
+
+      const data = new FormData(form);
+
+      submit.disabled = true;
+      submit.textContent = 'Enviando…';
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data,
+        });
+
+        const payload = (await response.json().catch(() => null)) as
+          | { ok?: boolean; message?: string; errors?: Record<string, string> }
+          | null;
+
+        if (response.ok && payload?.ok) {
+          form.reset();
+          showAlert(
+            'success',
+            'Listo, recibimos tu consulta. Un asesor te escribe dentro de las 24 horas hábiles.'
+          );
+          alertBox.focus?.();
+          return;
+        }
+
+        if (payload?.errors) {
+          for (const field of FIELD_NAMES) {
+            showFieldError(field, payload.errors[field]);
+          }
+        }
+        showAlert(
+          'error',
+          payload?.message ?? 'No pudimos enviar la consulta. Probá de nuevo.'
+        );
+      } catch {
+        showAlert(
+          'error',
+          'No hay conexión con el servidor. Revisá tu internet y probá de nuevo.'
+        );
+      } finally {
+        submit.disabled = false;
+        submit.textContent = submitLabel;
+      }
+    });
+
+    // "Consultar" en una tarjeta deja ese modelo ya elegido.
+    for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-bike]')) {
+      link.addEventListener('click', () => {
+        const select = controlOf('bikeSlug') as HTMLSelectElement | null;
+        if (select) select.value = link.dataset.bike ?? '';
+      });
+    }
+  }
+</script>

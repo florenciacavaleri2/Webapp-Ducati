@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+// Página de paso tras enviar el formulario sin JavaScript. No aporta nada
+// a la búsqueda y no debería aparecer en resultados.
+---
+
+<Base
+  title="Consulta enviada — Ducati Argentina"
+  description="Recibimos tu consulta. Un asesor de la red oficial te contacta dentro de las 24 horas hábiles."
+  noindex
+>
+  <SiteHeader />
+
+  <main id="contenido" class="thanks">
+    <div class="container-site thanks-inner">
+      <h1>Recibimos tu consulta</h1>
+      <p>
+        Un asesor de la red oficial te escribe dentro de las 24 horas hábiles
+        con el precio final, las opciones de financiación y la disponibilidad
+        del modelo que elegiste.
+      </p>
+      <p class="thanks-note">
+        Si no lo ves en tu bandeja de entrada, revisá la carpeta de correo no
+        deseado.
+      </p>
+      <a href="/" class="btn btn-primary">Volver al inicio</a>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .thanks {
+    background: var(--color-neutral-50);
+  }
+
+  .thanks-inner {
+    min-height: 52vh;
+    padding-block: 72px 96px;
+    max-width: 60ch;
+  }
+
+  .thanks h1 {
+    font-size: var(--text-display-lg);
+  }
+
+  .thanks p {
+    margin-top: 18px;
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    color: var(--color-neutral-800);
+  }
+
+  .thanks-note {
+    font-size: var(--text-body-md) !important;
+    color: var(--color-neutral-500) !important;
+  }
+
+  .thanks .btn {
+    margin-top: 32px;
+  }
+</style>

@@ -1,0 +1,207 @@
+---
+/**
+ * Encabezado: franja utilitaria navy + navegación blanca, según DESIGN.md.
+ *
+ * La marca va centrada en desktop, con navegación a la izquierda y la acción
+ * de conversión a la derecha. En mobile colapsa con <details>, que da un menú
+ * accesible y sin una línea de JavaScript.
+ *
+ * DESIGN.md describe un hamburger también en desktop (viene de la captura de
+ * un sitio completo). Acá es una landing de una sola página: un hamburger que
+ * abre cuatro anclas sería peor, así que los enlaces van visibles.
+ */
+
+const links = [
+  { href: '#modelos', label: 'Modelos' },
+  { href: '#contacto', label: 'Contacto' },
+];
+---
+
+<header class="header">
+  <div class="topbar">
+    <div class="container-site topbar-inner">
+      <span>Red oficial de concesionarios</span>
+      <span class="topbar-phone">Consultas: +54 11 5555-0100</span>
+    </div>
+  </div>
+
+  <div class="container-site nav">
+    <nav class="nav-links" aria-label="Principal">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <a href="/" class="brand" aria-label="Inicio">Ducati<span>Argentina</span></a>
+
+    <div class="nav-actions">
+      <a href="#contacto" class="btn btn-primary btn-compact">Pedir cotización</a>
+    </div>
+
+    <details class="mobile-menu">
+      <summary aria-label="Abrir menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </summary>
+      <div class="mobile-panel">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a href="#contacto" class="btn btn-primary">Pedir cotización</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: relative;
+    z-index: 20;
+    background: var(--color-neutral-0);
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  .topbar {
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+    font-size: var(--text-body-sm);
+  }
+
+  .topbar-inner {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar-phone {
+    display: none;
+  }
+
+  .nav {
+    height: 72px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .brand {
+    grid-column: 2;
+    justify-self: center;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-neutral-950);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .brand span {
+    color: var(--color-secondary);
+    margin-left: 0.4em;
+  }
+
+  .nav-links,
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-950);
+    text-decoration: none;
+    padding: 8px 0;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav-links a:hover {
+    border-bottom-color: var(--color-secondary);
+  }
+
+  .btn-compact {
+    min-height: 40px;
+    padding: 0 18px;
+    font-size: 0.9375rem;
+  }
+
+  /* Menú mobile con <details>: abre y cierra sin JavaScript. */
+  .mobile-menu {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .mobile-menu summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--color-neutral-950);
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: var(--color-neutral-0);
+    border-bottom: 1px solid var(--color-neutral-100);
+    box-shadow: var(--shadow-overlay);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-panel a:not(.btn) {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-950);
+    text-decoration: none;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  .mobile-panel .btn {
+    margin-top: 12px;
+  }
+
+  @media (min-width: 480px) {
+    .topbar-phone {
+      display: block;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .nav {
+      height: 96px;
+    }
+
+    .nav-links {
+      grid-column: 1;
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-actions {
+      grid-column: 3;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Hero from '../components/Hero.astro';
+import BikeGrid from '../components/BikeGrid.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { bikes } from '../data/bikes';
+
+const title = 'Ducati Argentina — Gama 2026, precios y cotización';
+const description =
+  'Los 22 modelos Ducati disponibles en Argentina con potencia, peso y precio de referencia. Pedí tu cotización y un asesor oficial te responde en 24 horas.';
+
+const siteUrl = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, '');
+
+// Datos estructurados: el catálogo como lista de productos, para que Google
+// entienda que la página es un listado de modelos con precio.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'AutoDealer',
+      '@id': `${siteUrl}/#dealer`,
+      name: 'Ducati Argentina',
+      description,
+      url: `${siteUrl}/`,
+      areaServed: 'AR',
+      telephone: '+54-11-5555-0100',
+    },
+    {
+      '@type': 'ItemList',
+      name: 'Gama Ducati Argentina 2026',
+      numberOfItems: bikes.length,
+      itemListElement: bikes.map((bike, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: `Ducati ${bike.name}`,
+          category: bike.segment,
+          brand: { '@type': 'Brand', name: 'Ducati' },
+          url: bike.url,
+          ...(bike.priceUsd
+            ? {
+                offers: {
+                  '@type': 'Offer',
+                  price: bike.priceUsd,
+                  priceCurrency: 'USD',
+                  availability: 'https://schema.org/InStock',
+                },
+              }
+            : {}),
+        },
+      })),
+    },
+  ],
+};
+---
+
+<Base title={title} description={description}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(jsonLd)}
+  />
+
+  <SiteHeader />
+
+  <main id="contenido">
+    <Hero />
+    <BikeGrid />
+    <LeadForm />
+  </main>
+
+  <SiteFooter />
+</Base>
