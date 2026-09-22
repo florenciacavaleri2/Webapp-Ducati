@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sumar un proceso — Portal de procesos</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="assets/portal.css" />
+  </head>
+  <body>
+    <header class="barra-doc">
+      <div class="hoja">
+        <a class="volver" href="index.html">Volver al portal</a>
+      </div>
+    </header>
+
+    <main>
+      <article class="documento">
+        <h1>Sumar un proceso al portal</h1>
+        <p>
+          Completá la ficha y esta página te devuelve las dos cosas que hacen
+          falta: el bloque para pegar en <code>registro.js</code> y el
+          instructivo ya armado con la plantilla del equipo. No se envía nada a
+          ningún lado: todo se genera en tu navegador.
+        </p>
+
+        <h2>La ficha del proceso</h2>
+        <form id="ficha">
+          <div class="campos">
+            <div class="campo campo-ancho">
+              <label for="nombre">Nombre del proceso</label>
+              <input id="nombre" name="nombre" required placeholder="Conciliación de tarjetas" />
+            </div>
+
+            <div class="campo">
+              <label for="id">Carpeta</label>
+              <input id="id" name="id" required pattern="[a-z0-9\-]+" />
+              <span class="ayuda">Se arma sola con el nombre. Solo minúsculas, números y guiones.</span>
+            </div>
+
+            <div class="campo">
+              <label for="categoria">Categoría</label>
+              <select id="categoria" name="categoria"></select>
+            </div>
+
+            <div class="campo campo-ancho">
+              <label for="descripcion">Descripción corta</label>
+              <textarea id="descripcion" name="descripcion" rows="2" required
+                placeholder="Una línea: qué resuelve el proceso."></textarea>
+            </div>
+
+            <div class="campo">
+              <label for="autor">Autor</label>
+              <input id="autor" name="autor" required placeholder="Nombre y apellido" />
+            </div>
+
+            <div class="campo">
+              <label for="actualizado">Última actualización</label>
+              <input id="actualizado" name="actualizado" required pattern="\d{2}/\d{2}/\d{4}" />
+            </div>
+
+            <div class="campo">
+              <label for="frecuencia">Frecuencia</label>
+              <select id="frecuencia" name="frecuencia">
+                <option>Mensual</option>
+                <option>Semanal</option>
+                <option>Diaria</option>
+                <option>Trimestral</option>
+                <option>Anual</option>
+                <option>A demanda</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="icono">Ícono</label>
+              <select id="icono" name="icono"></select>
+              <span class="ayuda" id="vista-icono"></span>
+            </div>
+
+            <fieldset class="grupo campo-ancho">
+              <legend>Empresas que cubre</legend>
+              <div class="opciones" id="empresas"></div>
+            </fieldset>
+
+            <div class="campo">
+              <label for="cuentas">Cuentas contables</label>
+              <input id="cuentas" name="cuentas" placeholder="115201, 411000" />
+              <span class="ayuda">Separadas por coma. Entran al buscador.</span>
+            </div>
+
+            <div class="campo">
+              <label for="claves">Palabras clave</label>
+              <input id="claves" name="claves" placeholder="tarjetas, cupones, liquidación" />
+              <span class="ayuda">Cómo lo buscaría alguien que no sabe el nombre exacto.</span>
+            </div>
+          </div>
+
+          <div class="acciones">
+            <button type="submit" class="boton">Generar</button>
+            <button type="reset" class="boton-linea">Limpiar</button>
+          </div>
+        </form>
+
+        <div id="salida" hidden>
+          <h2>1. Pegá este bloque en registro.js</h2>
+          <p>
+            Va dentro de <code>procesos: [ … ]</code>, después del último bloque.
+            Ojo con la coma del anterior.
+          </p>
+          <div class="salida">
+            <label class="oculto-visual" for="bloque">Bloque para registro.js</label>
+            <textarea id="bloque" rows="20" readonly spellcheck="false"></textarea>
+          </div>
+          <div class="acciones">
+            <button type="button" class="boton" id="copiar">Copiar el bloque</button>
+            <span class="aviso" id="aviso-copia" role="status"></span>
+          </div>
+
+          <h2>2. Creá la carpeta del proceso</h2>
+          <p>
+            En <code>procesos/</code>, con el nombre de la carpeta que elegiste:
+            <code id="ruta-carpeta"></code>. Adentro van dos archivos.
+          </p>
+          <ul>
+            <li>
+              <code>tool.html</code> — tu herramienta. Tiene que funcionar sola:
+              se abre con doble clic, no busca archivos en
+              <code>C:\Users\…</code> y no depende de internet. Si arrancás de
+              cero, copiá
+              <a href="plantillas/proceso-ejemplo/tool.html">la plantilla</a>.
+            </li>
+            <li>
+              <code>instructivo.html</code> — descargalo acá abajo, ya viene con
+              tus datos y la plantilla del equipo para completar.
+            </li>
+          </ul>
+          <div class="acciones">
+            <button type="button" class="boton" id="descargar">
+              Descargar instructivo.html
+            </button>
+            <span class="aviso" id="aviso-descarga" role="status"></span>
+          </div>
+
+          <h2>3. Abrí el portal</h2>
+          <p>
+            Tu proceso ya aparece en la portada. Mientras
+            <code>estado</code> diga <code>'pendiente'</code>, el botón
+            <strong>Abrir</strong> lleva a una página que explica que falta el
+            archivo. Cuando pongas tu <code>tool.html</code> en la carpeta,
+            cambialo por <code>'listo'</code>.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script src="registro.js"></script>
+    <script src="assets/iconos.js"></script>
+    <script>
+      /* Genera la ficha de registro.js y el instructivo. Todo local: esta
+         página no manda nada a ninguna parte. */
+      (function () {
+        'use strict';
+
+        var registro = window.PORTAL_REGISTRO || {};
+        var form = document.getElementById('ficha');
+        var salida = document.getElementById('salida');
+        var bloque = document.getElementById('bloque');
+        var ultima = null;
+
+        function hoy() {
+          var fecha = new Date();
+          function dos(numero) {
+            return String(numero).padStart(2, '0');
+          }
+          return dos(fecha.getDate()) + '/' + dos(fecha.getMonth() + 1) + '/' + fecha.getFullYear();
+        }
+
+        /** "Conciliación de Tarjetas" -> "conciliacion-de-tarjetas" */
+        function aSlug(texto) {
+          return String(texto)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .slice(0, 60);
+        }
+
+        function lista(texto) {
+          return String(texto || '')
+            .split(',')
+            .map(function (parte) {
+              return parte.trim();
+            })
+            .filter(Boolean);
+        }
+
+        /** Comilla simple en JS: lo único que hay que escapar del texto libre. */
+        function comillas(texto) {
+          return "'" + String(texto == null ? '' : texto).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+        }
+
+        function arreglo(valores) {
+          if (!valores.length) return '[]';
+          return '[' + valores.map(comillas).join(', ') + ']';
+        }
+
+        /* --- Armado de los campos que dependen del registro ------------------ */
+
+        var selectCategoria = document.getElementById('categoria');
+        (registro.categorias || []).forEach(function (categoria) {
+          var opcion = document.createElement('option');
+          opcion.value = categoria.id;
+          opcion.textContent = categoria.nombre;
+          selectCategoria.appendChild(opcion);
+        });
+
+        var selectIcono = document.getElementById('icono');
+        var vista = document.getElementById('vista-icono');
+        ((window.PortalIconos && window.PortalIconos.ids) || ['proceso']).forEach(function (id) {
+          var opcion = document.createElement('option');
+          opcion.value = id;
+          opcion.textContent = id;
+          selectIcono.appendChild(opcion);
+        });
+
+        function pintarIcono() {
+          vista.innerHTML =
+            window.PortalIconos
+              ? window.PortalIconos.svg(selectIcono.value, 'ficha-icono')
+              : '';
+        }
+        selectIcono.addEventListener('change', pintarIcono);
+
+        var contenedorEmpresas = document.getElementById('empresas');
+        Object.keys(registro.empresas || {}).forEach(function (sigla) {
+          var etiqueta = document.createElement('label');
+          etiqueta.className = 'opcion';
+          etiqueta.innerHTML =
+            '<input type="checkbox" name="empresa" value="' + sigla + '"> ' +
+            sigla + ' — ' + registro.empresas[sigla];
+          contenedorEmpresas.appendChild(etiqueta);
+        });
+
+        document.getElementById('actualizado').value = hoy();
+
+        var campoNombre = document.getElementById('nombre');
+        var campoId = document.getElementById('id');
+        var idTocado = false;
+        campoId.addEventListener('input', function () {
+          idTocado = true;
+        });
+        campoNombre.addEventListener('input', function () {
+          if (!idTocado) campoId.value = aSlug(campoNombre.value);
+        });
+
+        /* --- Salida ---------------------------------------------------------- */
+
+        function leer() {
+          var empresas = Array.prototype.slice
+            .call(contenedorEmpresas.querySelectorAll('input:checked'))
+            .map(function (casilla) {
+              return casilla.value;
+            });
+          return {
+            id: campoId.value.trim(),
+            nombre: campoNombre.value.trim(),
+            categoria: selectCategoria.value,
+            descripcion: document.getElementById('descripcion').value.trim(),
+            autor: document.getElementById('autor').value.trim(),
+            actualizado: document.getElementById('actualizado').value.trim(),
+            frecuencia: document.getElementById('frecuencia').value,
+            empresas: empresas,
+            cuentas: lista(document.getElementById('cuentas').value),
+            palabrasClave: lista(document.getElementById('claves').value),
+            icono: selectIcono.value,
+          };
+        }
+
+        function generarBloque(datos) {
+          return [
+            '    {',
+            '      id: ' + comillas(datos.id) + ',',
+            '      nombre: ' + comillas(datos.nombre) + ',',
+            '      categoria: ' + comillas(datos.categoria) + ',',
+            '      descripcion:',
+            '        ' + comillas(datos.descripcion) + ',',
+            '      autor: ' + comillas(datos.autor) + ',',
+            '      actualizado: ' + comillas(datos.actualizado) + ',',
+            '      frecuencia: ' + comillas(datos.frecuencia) + ',',
+            '      empresas: ' + arreglo(datos.empresas) + ',',
+            '      cuentas: ' + arreglo(datos.cuentas) + ',',
+            '      palabrasClave: ' + arreglo(datos.palabrasClave) + ',',
+            '      icono: ' + comillas(datos.icono) + ',',
+            "      estado: 'pendiente',",
+            '    },',
+          ].join('\n');
+        }
+
+        function nombreEmpresas(datos) {
+          if (!datos.empresas.length) return '[Empresas que cubre]';
+          return datos.empresas
+            .map(function (sigla) {
+              return (registro.empresas || {})[sigla] || sigla;
+            })
+            .join(', ');
+        }
+
+        function generarInstructivo(datos) {
+          var markdown = [
+            '# ' + datos.nombre,
+            '',
+            '**Autor:** ' + datos.autor,
+            '**Última actualización:** ' + datos.actualizado,
+            '**Categoría:** ' + (selectCategoria.selectedOptions[0] || {}).text,
+            '**Frecuencia:** ' + datos.frecuencia,
+            '**Empresas:** ' + nombreEmpresas(datos),
+            datos.cuentas.length ? '**Cuentas:** ' + datos.cuentas.join(', ') : '',
+            '',
+            '## Objetivo',
+            '',
+            datos.descripcion,
+            '',
+            '## Antes de empezar',
+            '',
+            '- [Archivos o datos necesarios: exportaciones, extractos, mayores.]',
+            '- [Requisitos previos: mes cerrado, conciliación previa hecha.]',
+            '',
+            '## Paso a paso',
+            '',
+            '1. [Primer paso.]',
+            '2. [Segundo paso.]',
+            '3. [Tercer paso.]',
+            '',
+            '## Resultado esperado',
+            '',
+            '[Qué tenés que tener al terminar.]',
+            '',
+            '## Notas y casos especiales',
+            '',
+            '- [Errores comunes y cómo se resuelven.]',
+            '',
+            '> Por relevar: completá los corchetes de arriba y borrá esta cita.',
+            '',
+          ]
+            .filter(function (linea, indice, todas) {
+              return !(linea === '' && todas[indice - 1] === '');
+            })
+            .join('\n');
+
+          return [
+            '<!doctype html>',
+            '<html lang="es">',
+            '  <head>',
+            '    <meta charset="utf-8" />',
+            '    <meta name="viewport" content="width=device-width, initial-scale=1" />',
+            '    <title>Instructivo — ' + datos.nombre + '</title>',
+            '    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />',
+            '    <link rel="stylesheet" href="../../assets/portal.css" />',
+            '  </head>',
+            '  <body>',
+            '    <!-- El instructivo se escribe acá abajo, en markdown, pegado al',
+            '         margen izquierdo. Es lo único que se edita en este archivo. -->',
+            '    <scr' + 'ipt type="text/markdown">',
+            markdown,
+            '    </scr' + 'ipt>',
+            '',
+            '    <scr' + 'ipt src="../../registro.js"></scr' + 'ipt>',
+            '    <scr' + 'ipt src="../../assets/markdown.js"></scr' + 'ipt>',
+            '    <scr' + 'ipt src="../../assets/instructivo.js"></scr' + 'ipt>',
+            '  </body>',
+            '</html>',
+            '',
+          ].join('\n');
+        }
+
+        form.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          ultima = leer();
+          bloque.value = generarBloque(ultima);
+          document.getElementById('ruta-carpeta').textContent =
+            'procesos/' + ultima.id + '/';
+          salida.hidden = false;
+          document.getElementById('aviso-copia').textContent = '';
+          document.getElementById('aviso-descarga').textContent = '';
+          salida.scrollIntoView({ block: 'start' });
+        });
+
+        form.addEventListener('reset', function () {
+          salida.hidden = true;
+          idTocado = false;
+          setTimeout(function () {
+            document.getElementById('actualizado').value = hoy();
+            pintarIcono();
+          }, 0);
+        });
+
+        document.getElementById('copiar').addEventListener('click', function () {
+          bloque.select();
+          var copiado = false;
+          try {
+            copiado = document.execCommand('copy');
+          } catch (error) {
+            copiado = false;
+          }
+          document.getElementById('aviso-copia').textContent = copiado
+            ? 'Copiado. Pegalo en registro.js.'
+            : 'Copialo a mano: el bloque ya está seleccionado.';
+        });
+
+        document.getElementById('descargar').addEventListener('click', function () {
+          if (!ultima) return;
+          var archivo = new Blob([generarInstructivo(ultima)], {
+            type: 'text/html;charset=utf-8',
+          });
+          var enlace = document.createElement('a');
+          enlace.href = URL.createObjectURL(archivo);
+          enlace.download = 'instructivo.html';
+          document.body.appendChild(enlace);
+          enlace.click();
+          document.body.removeChild(enlace);
+          setTimeout(function () {
+            URL.revokeObjectURL(enlace.href);
+          }, 1000);
+          document.getElementById('aviso-descarga').textContent =
+            'Descargado. Movelo a procesos/' + ultima.id + '/';
+        });
+
+        pintarIcono();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Falta el archivo — Portal de procesos</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="assets/portal.css" />
+  </head>
+  <body>
+    <header class="barra-doc">
+      <div class="hoja">
+        <a class="volver" href="index.html">Volver al portal</a>
+        <div class="barra-acciones" id="acciones"></div>
+      </div>
+    </header>
+
+    <main>
+      <article class="documento" id="contenido"></article>
+    </main>
+
+    <script src="registro.js"></script>
+    <script>
+      /* Destino de "Abrir" mientras un proceso no tiene su HTML en el portal.
+         Explica dónde va el archivo en lugar de dejar un enlace roto. */
+      (function () {
+        'use strict';
+
+        function escapar(texto) {
+          return String(texto == null ? '' : texto)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+
+        var registro = window.PORTAL_REGISTRO || {};
+        var id = new URLSearchParams(location.search).get('p') || '';
+        var proceso = (registro.procesos || []).filter(function (candidato) {
+          return candidato.id === id;
+        })[0];
+        var contenido = document.getElementById('contenido');
+
+        if (!proceso) {
+          contenido.innerHTML =
+            '<h1>Ese proceso no está en el registro</h1>' +
+            '<p>El enlace apunta a <code>' +
+            escapar(id || '(vacío)') +
+            '</code>, que no figura en <code>registro.js</code>. ' +
+            'Volvé al portal y probá de nuevo.</p>';
+          return;
+        }
+
+        document.title = 'Falta el archivo de ' + proceso.nombre + ' — Portal de procesos';
+
+        var categoria = (registro.categorias || []).filter(function (candidata) {
+          return candidata.id === proceso.categoria;
+        })[0];
+
+        document.getElementById('acciones').innerHTML =
+          '<a class="boton-linea" href="procesos/' +
+          encodeURIComponent(proceso.id) +
+          '/instructivo.html">Ver el instructivo</a>';
+
+        contenido.innerHTML =
+          '<h1>' +
+          escapar(proceso.nombre) +
+          ' todavía no tiene su archivo en el portal</h1>' +
+          '<p>La ficha está armada y el instructivo también. Falta la herramienta: ' +
+          'el HTML que ya existe en la máquina de quien lo desarrolló.</p>' +
+          '<dl class="doc-meta">' +
+          '<div><dt>Categoría</dt><dd>' +
+          escapar(categoria ? categoria.nombre : proceso.categoria) +
+          '</dd></div>' +
+          '<div><dt>Autor</dt><dd>' +
+          escapar(proceso.autor) +
+          '</dd></div>' +
+          '<div><dt>Frecuencia</dt><dd>' +
+          escapar(proceso.frecuencia) +
+          '</dd></div>' +
+          '<div><dt>Carpeta</dt><dd><code>procesos/' +
+          escapar(proceso.id) +
+          '/</code></dd></div>' +
+          '</dl>' +
+          '<h2>Cómo cargarlo</h2>' +
+          '<ol>' +
+          '<li>Comprobá que el HTML funcione solo: se abre con doble clic, no ' +
+          'pide archivos de <code>C:\\Users\\…</code> y no depende de internet.</li>' +
+          '<li>Copialo a <code>procesos/' +
+          escapar(proceso.id) +
+          '/</code> con el nombre <code>tool.html</code>.</li>' +
+          '<li>En <code>registro.js</code>, en el bloque de <strong>' +
+          escapar(proceso.nombre) +
+          '</strong>, cambiá <code>estado: \'pendiente\'</code> por ' +
+          '<code>estado: \'listo\'</code> y actualizá la fecha.</li>' +
+          '</ol>' +
+          '<p>Listo: el botón <strong>Abrir</strong> de la portada pasa a llevar ' +
+          'directo a la herramienta.</p>';
+      })();
+    </script>
+  </body>
+</html>

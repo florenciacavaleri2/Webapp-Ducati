@@ -1,0 +1,841 @@
+/* ============================================================================
+   Portal de procesos — Grupo Opencars
+   Hoja de estilos única: portada, ficha, instructivo, formulario.
+
+   Sin frameworks, sin CDN y sin tipografías descargadas: el portal se abre
+   con doble clic desde una carpeta sincronizada y tiene que verse igual sin
+   internet. Los tokens de abajo son la fuente de verdad del diseño; están
+   documentados en README.md.
+   ========================================================================= */
+
+:root {
+  /* Papelería contable: blanco frío, no crema. */
+  --papel: #f2f4f3;
+  --ficha: #ffffff;
+  --tinta: #16222e;
+  --tinta-media: #55636e;
+  --regla: #d4dad8;
+  --regla-fuerte: #aab4b1;
+
+  /* Verde sello: la única acción primaria. */
+  --sello: #0f5c4a;
+  --sello-oscuro: #093c31;
+  --sello-suave: #e7efec;
+
+  /* Ámbar: lo que falta relevar. Nunca se usa para acciones. */
+  --pendiente: #8a5a12;
+  --pendiente-borde: #d9b877;
+  --pendiente-papel: #fdf6e8;
+
+  /* Una regla por categoría. Todas del mismo peso visual. */
+  --cat-gastos: #0f5c4a;
+  --cat-stock: #1e4e79;
+  --cat-reportes: #6e2c4e;
+  --cat-otro: #5a6670;
+
+  --serif: Cambria, "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --datos: Consolas, "SFMono-Regular", ui-monospace, "Liberation Mono", monospace;
+
+  --e1: 4px;
+  --e2: 8px;
+  --e3: 12px;
+  --e4: 16px;
+  --e5: 24px;
+  --e6: 32px;
+  --e7: 48px;
+
+  --radio: 2px;
+  --ancho-hoja: 1140px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--sello);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sello);
+  outline-offset: 2px;
+}
+
+.hoja {
+  max-width: var(--ancho-hoja);
+  margin: 0 auto;
+  padding: 0 var(--e5);
+}
+
+.oculto-visual {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Marca ---------------------------------------------------------------- */
+
+.marca {
+  background: var(--ficha);
+  border-bottom: 3px solid var(--sello);
+}
+
+.marca > .hoja {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e3);
+  min-height: 62px;
+  padding-top: var(--e3);
+  padding-bottom: var(--e3);
+  flex-wrap: wrap;
+}
+
+.marca-nombre {
+  font-family: var(--serif);
+  font-size: 19px;
+  letter-spacing: 0.01em;
+}
+
+.marca-area {
+  font-size: 14px;
+  color: var(--tinta-media);
+}
+
+.marca-acciones {
+  margin-left: auto;
+  display: flex;
+  gap: var(--e3);
+  align-items: center;
+}
+
+/* --- Índice (el encabezado de la portada) -------------------------------- */
+
+.indice {
+  padding-top: var(--e6);
+  padding-bottom: var(--e5);
+}
+
+.indice h1 {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.indice-estado {
+  margin: var(--e2) 0 0;
+  color: var(--tinta-media);
+  font-size: 15px;
+  max-width: 62ch;
+}
+
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e4) var(--e5);
+  align-items: flex-end;
+  margin-top: var(--e5);
+}
+
+.buscador {
+  flex: 1 1 320px;
+  max-width: 420px;
+  min-width: 0;
+}
+
+.buscador input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--e3);
+  font: inherit;
+  color: var(--tinta);
+  background: var(--ficha);
+  border: 1px solid var(--regla-fuerte);
+  border-radius: var(--radio);
+}
+
+.buscador input::placeholder {
+  color: var(--tinta-media);
+}
+
+.buscador input:focus {
+  border-color: var(--sello);
+  outline: 1px solid var(--sello);
+}
+
+.pista {
+  margin: var(--e2) 0 0;
+  font-size: 13px;
+  color: var(--tinta-media);
+}
+
+kbd {
+  font-family: var(--datos);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--regla-fuerte);
+  border-bottom-width: 2px;
+  border-radius: var(--radio);
+  background: var(--ficha);
+}
+
+/* Chips de categoría. El activo toma el color de su categoría. */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.chip {
+  font: inherit;
+  font-size: 14px;
+  height: 36px;
+  padding: 0 var(--e3);
+  background: transparent;
+  color: var(--tinta);
+  border: 1px solid var(--regla-fuerte);
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--tinta-media);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--color-cat, var(--tinta));
+  border-color: var(--color-cat, var(--tinta));
+  color: #fff;
+}
+
+.chip-cuenta {
+  font-family: var(--datos);
+  font-size: 12px;
+  opacity: 0.8;
+  margin-left: 6px;
+}
+
+/* --- Fichas -------------------------------------------------------------- */
+
+.fichas {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--e7);
+  display: grid;
+  gap: var(--e4);
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+}
+
+.ficha {
+  --color-cat: var(--cat-otro);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--ficha);
+  border: 1px solid var(--regla);
+  border-left: 4px solid var(--color-cat);
+  border-radius: var(--radio);
+}
+
+.ficha[data-categoria="gastos"] { --color-cat: var(--cat-gastos); }
+.ficha[data-categoria="stock"] { --color-cat: var(--cat-stock); }
+.ficha[data-categoria="reportes"] { --color-cat: var(--cat-reportes); }
+
+.ficha:hover {
+  border-color: var(--regla-fuerte);
+  border-left-color: var(--color-cat);
+}
+
+.ficha-cuerpo {
+  padding: var(--e4) var(--e4) var(--e3);
+  flex: 1;
+}
+
+.ficha-titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e2);
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.ficha-icono {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  color: var(--color-cat);
+}
+
+.ficha-categoria {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  flex-wrap: wrap;
+  margin: var(--e1) 0 0;
+  font-size: 13px;
+  color: var(--color-cat);
+}
+
+.ficha-descripcion {
+  margin: var(--e3) 0 0;
+  font-size: 15px;
+  color: var(--tinta-media);
+  max-width: 54ch;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empresa,
+.cuenta {
+  font-family: var(--datos);
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  border: 1px solid var(--regla);
+  border-radius: var(--radio);
+  color: var(--tinta-media);
+}
+
+.cuenta::before {
+  content: "cta. ";
+  color: var(--regla-fuerte);
+}
+
+.sello {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 8px;
+  color: var(--pendiente);
+  background: var(--pendiente-papel);
+  border: 1px solid var(--pendiente-borde);
+  border-radius: var(--radio);
+}
+
+/* Mini planilla de metadatos: acá las etiquetas sí son información. */
+.meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--regla);
+}
+
+.meta > div {
+  padding: var(--e2) var(--e3);
+  min-width: 0;
+}
+
+.meta > div + div {
+  border-left: 1px solid var(--regla);
+}
+
+.meta dt {
+  font-size: 11px;
+  color: var(--tinta-media);
+}
+
+.meta dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  overflow-wrap: break-word;
+}
+
+.meta dd.dato {
+  font-family: var(--datos);
+  font-size: 12px;
+}
+
+.ficha-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  padding: var(--e3) var(--e4) var(--e4);
+  border-top: 1px solid var(--regla);
+}
+
+/* --- Botones ------------------------------------------------------------- */
+
+.boton,
+.boton-linea {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  height: 40px;
+  padding: 0 var(--e4);
+  font: inherit;
+  font-size: 15px;
+  text-decoration: none;
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.boton {
+  background: var(--sello);
+  color: #fff;
+  border: 1px solid var(--sello);
+}
+
+.boton:hover {
+  background: var(--sello-oscuro);
+  border-color: var(--sello-oscuro);
+}
+
+.boton-linea {
+  background: var(--ficha);
+  color: var(--tinta);
+  border: 1px solid var(--regla-fuerte);
+}
+
+.boton-linea:hover {
+  border-color: var(--tinta);
+}
+
+.boton[aria-disabled="true"] {
+  background: var(--regla);
+  border-color: var(--regla);
+  color: var(--tinta-media);
+  cursor: default;
+}
+
+.boton-texto {
+  font: inherit;
+  font-size: 15px;
+  color: var(--sello);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* --- Vacío --------------------------------------------------------------- */
+
+.vacio {
+  padding: var(--e6) 0 var(--e7);
+  max-width: 56ch;
+}
+
+.vacio h2 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  margin: 0 0 var(--e2);
+}
+
+.vacio p {
+  margin: 0 0 var(--e3);
+  color: var(--tinta-media);
+}
+
+/* --- Pie ----------------------------------------------------------------- */
+
+.pie {
+  border-top: 1px solid var(--regla);
+  background: var(--ficha);
+}
+
+.pie > .hoja {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3) var(--e5);
+  padding-top: var(--e4);
+  padding-bottom: var(--e4);
+  font-size: 14px;
+  color: var(--tinta-media);
+}
+
+/* --- Documento: instructivo y páginas de texto --------------------------- */
+
+.barra-doc {
+  background: var(--ficha);
+  border-bottom: 1px solid var(--regla);
+}
+
+.barra-doc > .hoja {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  padding-top: var(--e3);
+  padding-bottom: var(--e3);
+}
+
+.barra-doc .volver {
+  font-size: 15px;
+}
+
+.barra-doc .barra-acciones {
+  margin-left: auto;
+  display: flex;
+  gap: var(--e2);
+}
+
+.documento {
+  max-width: 820px;
+  margin: var(--e6) auto var(--e7);
+  padding: var(--e7);
+  background: var(--ficha);
+  border: 1px solid var(--regla);
+  border-radius: var(--radio);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.documento > :first-child {
+  margin-top: 0;
+}
+
+.documento h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 var(--e4);
+  padding-bottom: var(--e3);
+  border-bottom: 2px solid var(--sello);
+}
+
+.documento h2 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  margin: var(--e6) 0 var(--e3);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--regla);
+}
+
+.documento h3 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+  margin: var(--e5) 0 var(--e2);
+}
+
+.documento p,
+.documento ul,
+.documento ol {
+  margin: 0 0 var(--e3);
+  max-width: 72ch;
+}
+
+.documento li {
+  margin-bottom: 6px;
+}
+
+.documento li > ul,
+.documento li > ol {
+  margin: 6px 0 0;
+}
+
+.documento ol {
+  padding-left: 1.6em;
+}
+
+.documento ul {
+  padding-left: 1.3em;
+}
+
+.documento code {
+  font-family: var(--datos);
+  font-size: 0.88em;
+  padding: 1px 4px;
+  background: var(--papel);
+  border: 1px solid var(--regla);
+  border-radius: var(--radio);
+}
+
+.documento pre {
+  margin: 0 0 var(--e4);
+  padding: var(--e3) var(--e4);
+  overflow-x: auto;
+  background: var(--papel);
+  border: 1px solid var(--regla);
+  border-radius: var(--radio);
+}
+
+.documento pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+}
+
+.documento hr {
+  border: 0;
+  border-top: 1px solid var(--regla);
+  margin: var(--e5) 0;
+}
+
+.documento table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 var(--e4);
+  font-size: 15px;
+}
+
+.documento th,
+.documento td {
+  border: 1px solid var(--regla);
+  padding: 6px var(--e3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.documento th {
+  background: var(--papel);
+  font-weight: 600;
+}
+
+.documento blockquote {
+  margin: 0 0 var(--e4);
+  padding: var(--e3) var(--e4);
+  border-left: 3px solid var(--regla-fuerte);
+  background: var(--papel);
+  color: var(--tinta-media);
+}
+
+.documento blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Lo que falta relevar se ve, no se esconde. */
+.documento blockquote.por-relevar {
+  border-left-color: var(--pendiente-borde);
+  background: var(--pendiente-papel);
+  color: var(--pendiente);
+}
+
+.documento .lista-tareas {
+  list-style: none;
+  padding-left: 0;
+}
+
+.documento .lista-tareas input {
+  margin-right: var(--e2);
+}
+
+.doc-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: 0 0 var(--e5);
+  padding: 0;
+  background: var(--regla);
+  border: 1px solid var(--regla);
+}
+
+.doc-meta > div {
+  background: var(--ficha);
+  padding: var(--e2) var(--e3);
+}
+
+.doc-meta dt {
+  font-size: 11px;
+  color: var(--tinta-media);
+}
+
+.doc-meta dd {
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+/* --- Formulario (sumar un proceso) --------------------------------------- */
+
+.campos {
+  display: grid;
+  gap: var(--e4);
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin: 0 0 var(--e5);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e1);
+  min-width: 0;
+}
+
+.campo-ancho {
+  grid-column: 1 / -1;
+}
+
+.campo label,
+.grupo legend {
+  font-size: 13px;
+  color: var(--tinta-media);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  font: inherit;
+  font-size: 15px;
+  color: var(--tinta);
+  background: var(--ficha);
+  border: 1px solid var(--regla-fuerte);
+  border-radius: var(--radio);
+  padding: 9px var(--e3);
+  min-width: 0;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo .ayuda {
+  font-size: 12px;
+  color: var(--tinta-media);
+}
+
+.grupo {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+  margin-top: var(--e1);
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.salida {
+  margin: 0 0 var(--e4);
+}
+
+.salida textarea {
+  width: 100%;
+  font-family: var(--datos);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: var(--e3);
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--regla-fuerte);
+  border-radius: var(--radio);
+  resize: vertical;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  align-items: center;
+}
+
+.aviso {
+  font-size: 14px;
+  color: var(--sello);
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .hoja {
+    padding: 0 var(--e4);
+  }
+
+  .indice {
+    padding-top: var(--e5);
+  }
+
+  .indice h1 {
+    font-size: 27px;
+  }
+
+  .fichas {
+    grid-template-columns: 1fr;
+  }
+
+  .buscador {
+    max-width: none;
+  }
+
+  .documento {
+    margin: var(--e4) auto var(--e6);
+    padding: var(--e5) var(--e4);
+  }
+
+  .documento h1 {
+    font-size: 25px;
+  }
+
+  .ficha-acciones .boton,
+  .ficha-acciones .boton-linea {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .marca,
+  .barra-doc,
+  .pie,
+  .controles {
+    display: none;
+  }
+
+  .documento {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+}
